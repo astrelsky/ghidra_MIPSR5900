@@ -1,0 +1,284 @@
+
+##********************SPECIAL OPCODES***************************
+# 0000 0000 000t tttt dddd daaa aa00 0000
+:sll RD32, RT32src, sa              is prime=0 & fct=0 & rs=0 & RD32 & RT32src & sa & RD {    
+    RD32 = RT32src << sa;
+    RD = sext(RD32);
+}
+# 0000 0000 000t tttt dddd daaa aa00 0010
+:srl RD32, RT32src, sa              is prime=0 & fct=2 & rs=0 & RT32src & RD32 & sa & RD { 
+    RD32 = RT32src >> sa; 
+    RD = sext(RD32);
+}
+# 0000 0000 000t tttt dddd daaa aa00 0011
+:sra RD32, RT32src, sa              is prime=0 & fct=3 & rs=0 & RT32src & RD32 & sa & RD { 
+    RD32 = RT32src s>> sa;
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0000 0100
+:sllv RD32, RT32src, RS32src          is prime=0 & fct=4 & RS32src & RT32src & RD32 & sa=0 & RD { 
+    shift:4 = RS32src & 0x1f;
+    RD32 = RT32src << shift;
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0000 0110
+:srlv RD32, RT32src, RS32src          is prime=0 & fct=6 & RS32src & RT32src & RD32 & sa=0 & RD { 
+    shift:4 = RS32src & 0x1f;
+    RD32 = RT32src >> shift; 
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0000 0111
+:srav RD32, RT32src, RS32src          is prime=0 & fct=7 & RS32src & RT32src & RD32 & sa=0 & RD { 
+    shift:4 = RS32src & 0x1f;
+    RD32 = RT32src s>> shift;
+    RD = sext(RD32);
+}
+# 0000 00ss sss0 0000 0000 0hhh hh00 1000
+:jr RS32src                       is prime=0 & fct=8 & RS32src & rt=0 & rd=0 { 
+    delayslot(1); 
+    goto [RS32src]; 
+}
+:jr ra                           is prime=0 & fct=8 & rs=31 & ra & rt=0 & rd=0 & sa=0    { 
+    delayslot(1); 
+    return[ra]; 
+}
+# 0000 00cc cccc cccc cccc cccc cc00 1100
+:syscall                        is prime=0 & fct=12 & breakcode { 
+    tmp:4=breakcode; 
+    syscall(tmp); 
+}
+# 0000 00cc cccc cccc cccc cccc cc00 1100
+:syscall                        is prime=0 & fct=12 & breakcode=0 { 
+    tmp:4=0; 
+    syscall(tmp); 
+}
+# 0000 00cc cccc cccc cccc cccc cc00 1101
+:break breakcode                is prime=0 & fct=13 & breakcode { 
+    tmp:4=breakcode; 
+    trap(tmp); 
+}
+define pcodeop SYNC;
+
+:sync.l is prime=0 & rd=0 & rs=0 & rt=0 & stype & bit10=0 & fct=0xF { synch(stype:1); }
+:sync.p is prime=0 & rd=0 & rs=0 & rt=0 & stype & bit10=1 & fct=0xF { synch(stype:1); }
+
+# 0000 0000 0000 0000 dddd d000 0001 0000
+:mfhi RD                        is prime=0 & fct=16 & rs=0 & rt=0 & RD & sa=0 { 
+    RD = hi; 
+}
+# 0000 0000 0000 0000 dddd d000 0001 0010
+:mflo RD                        is prime=0 & fct=18 & rs=0 & rt=0 & RD & sa=0 { 
+    RD = lo; 
+}
+# 0000 00ss sss0 0000 0000 0000 0001 0001
+:mthi RSsrc                     is prime=0 & RSsrc & rt=0 & rd=0 & bigfunct=0x11{ 
+    hi = RSsrc; 
+}
+# 0000 00ss sss0 0000 0000 0000 0001 0011
+:mtlo RSsrc                     is prime=0 & bigfunct=0x13 & RSsrc & rt=0 & rd=0 { 
+    lo = RSsrc; 
+}
+# 0000 00ss ssst tttt dddd d000 0001 0100
+:dsllv RD, RTsrc, RSsrc         is prime=0 & fct=20 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RTsrc << RSsrc;
+}
+# 0000 00ss ssst tttt dddd d000 0101 0110
+:dsrlv RD, RTsrc, RSsrc         is prime=0 & fct=22 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RTsrc >> RSsrc;
+}
+# 0000 00ss ssst tttt dddd d000 0001 0111
+:dsrav RD, RTsrc, RSsrc         is prime=0 & fct=23 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RTsrc s>> RSsrc;
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1000
+:mult RS32src, RT32src              is prime=0 & fct=24 & RS32src & RT32src & rd=0 & sa=0 {
+    tmp1:8 = sext( RS32src );
+    tmp2:8 = sext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo = sext(prod:4);    
+    prod = prod >> 32;
+    hi = sext(prod:4);    
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1001
+:multu RS32src, RT32src             is prime=0 & fct=25 & RS32src & RT32src & rd=0 & sa=0 { 
+    tmp1:8 = zext( RS32src );
+    tmp2:8 = zext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo = sext(prod:4);    
+    prod = prod >> 32;
+    hi = sext(prod:4); 
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1000
+:mult RD, RS32src, RT32src              is prime=0 & fct=24 & RS32src & RT32src & RD & sa=0 {
+    tmp1:8 = sext( RS32src );
+    tmp2:8 = sext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo = sext(prod:4);    
+    prod = prod >> 32;
+    hi = sext(prod:4); 
+    RD = prod;   
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1001
+:multu RD, RS32src, RT32src             is prime=0 & fct=25 & RS32src & RT32src & RD & sa=0 { 
+    tmp1:8 = zext( RS32src );
+    tmp2:8 = zext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo = sext(prod:4);    
+    prod = prod >> 32;
+    hi = sext(prod:4); 
+    RD = prod;
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1010
+:div RS32src, RT32src               is prime=0 & fct=26 & RS32src & RT32src & rd=0 & sa=0 {
+    lo = sext(RS32src s/ RT32src); 
+    hi = sext(RS32src s% RT32src); 
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1011
+:divu RS32src, RT32src              is prime=0 & fct=27 & RS32src & RT32src & rd=0 & sa=0 { 
+    lo = sext(RS32src / RT32src); 
+    hi = sext(RS32src % RT32src);   
+}
+# 0000 00ss ssst tttt dddd d000 0010 0000
+:add RD32, RS32src, RT32src           is prime=0 & sa=0 & fct=32 & RD32 & RS32src & RT32src & RD {
+    RD32 = RS32src + RT32src;
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0010 0001
+:addu RD32, RS32src, RT32src          is prime=0 & fct=33 & RS32src & RT32src & RD32 & sa=0 & RD { 
+    RD32 = RS32src + RT32src;
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0010 0010                           
+:sub RD32, RS32src, RT32src           is prime=0 & fct=34 & RS32src & RT32src & RD32 & sa=0 & RD {    
+    RD32 = RS32src - RT32src; 
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0010 0011
+:subu RD32, RS32src, RT32src          is prime=0 & fct=35 & RS32src & RT32src & RD32 & sa=0 & RD { 
+    RD32 = RS32src - RT32src;
+    RD = sext(RD32);
+}
+# 0000 00ss ssst tttt dddd d000 0010 0100
+:and RD, RSsrc, RTsrc           is prime=0 & fct=36 & RSsrc & RTsrc & RD & sa=0 { 
+    RD = RSsrc & RTsrc; 
+}
+# 0000 00ss ssst tttt dddd d000 0010 0101
+:or RD, RSsrc, RTsrc            is prime=0 & fct=37 & RSsrc & RTsrc & RD & sa=0 { 
+    RD = RSsrc | RTsrc; 
+}
+# 0000 00ss ssst tttt dddd d000 0010 0110
+:xor RD, RSsrc, RTsrc           is prime=0 & fct=38 & RSsrc & RTsrc & RD & sa=0 { 
+    RD = RSsrc ^ RTsrc; 
+}
+# 0000 00ss ssst tttt dddd d000 0010 0111
+:nor RD, RSsrc, RTsrc           is prime=0 & fct=39 & RSsrc & RTsrc & RD & sa=0 { 
+    RD = ~(RSsrc | RTsrc); 
+}
+# 0000 00ss ssst tttt dddd d000 0010 1010
+:slt RD, RSsrc, RTsrc           is prime=0 & fct=42 & RSsrc & RTsrc & RD & sa=0 { 
+    RD = zext( RSsrc s< RTsrc ); 
+}
+# 0000 00ss ssst tttt dddd d000 0010 1011
+:sltu RD, RSsrc, RTsrc          is prime=0 & fct=43 & RSsrc & RTsrc & RD & sa=0 { 
+    RD = zext( RSsrc < RTsrc ); 
+}
+# 0000 00ss ssst tttt dddd d000 0010 1100
+:dadd RD, RSsrc, RTsrc          is prime=0 & fct=44 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RSsrc + RTsrc; 
+}
+# 0000 00ss ssst tttt dddd d000 0010 1101
+:daddu RD, RSsrc, RTsrc         is prime=0 & fct=45 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RSsrc + RTsrc; 
+}
+# 0000 00ss ssst tttt dddd d000 0010 1110
+:dsub RD, RSsrc, RTsrc          is prime=0 & fct=46 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RSsrc - RTsrc;
+}
+# 0000 00ss ssst tttt dddd d000 0010 1111
+:dsubu RD, RSsrc, RTsrc         is prime=0 & fct=47 & RSsrc & RTsrc & RD & sa=0 {
+    RD = RSsrc - RTsrc;
+}
+# 0000 00ss ssst tttt cccc cccc cc11 0000
+:tge RSsrc, RTsrc               is prime=0 & fct=48 & RSsrc & RTsrc & code { 
+    if (RSsrc < RTsrc) goto <done>; 
+    tmp:2=code; 
+    trap(tmp);
+    <done>
+}
+# 0000 00ss ssst tttt cccc cccc cc11 0001
+:tgeu RSsrc, RTsrc              is prime=0 & fct=49 & RSsrc & RTsrc & code { 
+    if (RSsrc < RTsrc) goto <done>; 
+    tmp:2=code; 
+    trap(tmp);
+    <done>
+}
+# 0000 00ss ssst tttt cccc cccc cc11 0010
+:tlt RSsrc, RTsrc               is prime=0 & fct=50 & RSsrc & RTsrc & code { 
+    if (RSsrc s>= RTsrc) goto <done>; 
+    tmp:2=code; 
+    trap(tmp);
+    <done>
+}
+# 0000 00ss ssst tttt cccc cccc cc11 0011
+:tltu RSsrc, RTsrc              is prime=0 & fct=51 & RSsrc & RTsrc & code { 
+    if (RSsrc >= RTsrc) goto <done>; 
+    tmp:2=code; 
+    trap(tmp);
+    <done>
+}
+# 0000 00ss ssst tttt cccc cccc cc11 0110
+:tne RSsrc, RTsrc               is prime=0 & fct=54 & RSsrc & RTsrc & code { 
+    if (RSsrc == RTsrc) goto <done>; 
+    tmp:2=code; 
+    trap(tmp);
+    <done>
+}
+# 0000 00ss ssst tttt cccc cccc cc11 0100
+:teq RSsrc, RTsrc               is prime=0 & fct=52 & RSsrc & RTsrc & code { 
+    if (RSsrc != RTsrc) goto <done>; 
+    tmp:2=code; 
+    trap(tmp);
+    <done>
+}
+# 0000 0000 000t tttt dddd daaa aa11 1000
+:dsll RD, RTsrc, sa             is prime=0 & fct=56 & rs=0 & RTsrc & RD & sa {
+    RD = RTsrc << sa;
+}
+# 0000 0000 000t tttt dddd daaa aa11 1100
+:dsll32 RD, RTsrc, sa           is prime=0 & fct=60 & rs=0 & RTsrc & RD & sa {
+    RD = RTsrc << (sa + 32);
+}
+# 0000 0000 000t tttt dddd daaa aa11 1010
+:dsrl RD, RTsrc, sa             is prime=0 & fct=58 & rs=0 & RTsrc & RD & sa {
+    RD = RTsrc >> sa;
+}
+# 0000 0000 000t tttt dddd daaa aa11 1110
+:dsrl32 RD, RTsrc, sa           is prime=0 & fct=62 & rs=0 & RTsrc & RD & sa {
+    RD = RTsrc >> (sa + 32);
+}
+# 0000 0000 000t tttt dddd daaa aa11 1011
+:dsra RD, RTsrc, sa             is prime=0 & fct=59 & rs=0 & RTsrc & RD & sa {
+    RD = RTsrc s>> sa;
+}
+# 0000 0000 000t tttt dddd daaa aa11 1111
+:dsra32 RD, RTsrc, sa           is prime=0 & fct=63 & rs=0 & RTsrc & RD & sa {
+    RD = RTsrc s>> (sa + 32);
+}
+# 0000 00ss ssst tttt dddd d000 0000 1010
+:movz RD, RSsrc, RTsrc          is prime=0 & zero5=0 & fct=10 & RD & RSsrc & RTsrc {
+     if (RTsrc != 0) goto <done>; # We can't use goto inst_next because it fails if we are in a delay slot
+       RD = RSsrc;
+     <done>
+}
+# 0000 00ss ssst tttt dddd d000 0000 1011
+:movn RD, RSsrc, RTsrc          is prime=0 & zero5=0 & fct=11 & RD & RSsrc & RTsrc  {
+    if (RTsrc == 0) goto <done>; 
+      RD = RSsrc;
+    <done>
+}
+:mtsa RS32src                is prime=0 & rt=0 & rd=0 & RS32src & fct=0x29 {
+    sar = RS32src;
+}
+:mfsa RD32                is prime=0 & rt=0 & rs=0 & RD32 & fct=0x28 {
+    RD32 = sar;
+}

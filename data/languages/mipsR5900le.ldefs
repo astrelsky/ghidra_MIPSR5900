@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language_definitions>
+  <language processor="MIPS"
+            endian="little"
+            size="32"
+            variant="R5900"
+            version="1.0"
+            slafile="mipsR5900le.sla"
+            processorspec="mipsR5900le.pspec"
+            id="MIPS:LE:32:R5900">
+    <description>MIPS R5900 (Sony Playstation 2)</description>
+    <compiler name="default" spec="mipsR5900le.cspec" id="default"/>
+    <external_name tool="gnu" name="mips:5000"/>
+    <external_name tool="IDA-PRO" name="mipsl"/>
+    <external_name tool="IDA-PRO" name="r5900l"/>
+    <external_name tool="DWARF.register.mapping.file" name="mips.dwarf"/>
+  </language>
+</language_definitions>

@@ -1,0 +1,1081 @@
+##***********************MMI OPCODES*****************************
+
+:div1 RS32src, RT32src is prime=0x1C & RS32src & RT32src & immed=0x1A {
+    lo = sext(RS32src s/ RT32src); 
+    hi = sext(RS32src s% RT32src); 
+}
+
+:divu1 RS32src, RT32src is prime=0x1C & RS32src & RT32src & immed=0x1B {
+    lo = sext(RS32src / RT32src); 
+    hi = sext(RS32src % RT32src); 
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0000
+:madd RS32src, RT32src              is prime=0x1C & zero4=0x0 & bigfunct=0x0 & RS32src & RT32src {
+	tmp1:8 = sext(RS32src);
+	tmp2:8 = sext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo = lo & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi) << 32) + zext(lo) + prod;
+    lo = sext(sum:4);    
+    sum = sum >> 32;
+    hi = sext(sum:4);    
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0000
+:madd RD, RS32src, RT32src              is prime=0x1C & RD & bigfunct=0x0 & RS32src & RT32src {
+	tmp1:8 = sext(RS32src);
+	tmp2:8 = sext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo = lo & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi) << 32) + zext(lo) + prod;
+    lo = sext(sum:4);    
+    sum = sum >> 32;
+    hi = sext(sum:4);
+    RD = prod;
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0001
+:maddu RS32src, RT32src             is prime=0x1C & zero4=0x0 & bigfunct=0x01 & RS32src & RT32src {
+	tmp1:8 = zext(RS32src);
+	tmp2:8 = zext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo = lo & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi) << 32) + zext(lo) + prod;
+    lo = sext(sum:4);
+    sum = sum >> 32;
+    hi = sext(sum:4); 
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0001
+:maddu RD, RS32src, RT32src             is prime=0x1C & RD & bigfunct=0x01 & RS32src & RT32src {
+	tmp1:8 = zext(RS32src);
+	tmp2:8 = zext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo = lo & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi) << 32) + zext(lo) + prod;
+    lo = sext(sum:4);
+    sum = sum >> 32;
+    hi = sext(sum:4);
+    RD = prod;
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0000
+:madd1 RS32src, RT32src              is prime=0x1C & zero4=0x0 & bigfunct=0x20 & RS32src & RT32src {
+	tmp1:8 = sext(RS32src);
+	tmp2:8 = sext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo1 = lo1 & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi1) << 32) + zext(lo1) + prod;
+    lo1 = sext(sum:4);    
+    sum = sum >> 32;
+    hi1 = sext(sum:4);    
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0000
+:madd1 RD, RS32src, RT32src              is prime=0x1C & RD & bigfunct=0x20 & RS32src & RT32src {
+	tmp1:8 = sext(RS32src);
+	tmp2:8 = sext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo1 = lo1 & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi1) << 32) + zext(lo1) + prod;
+    lo1 = sext(sum:4);    
+    sum = sum >> 32;
+    hi1 = sext(sum:4);
+    RD = prod;
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0001
+:maddu1 RS32src, RT32src             is prime=0x1C & zero4=0x0 & bigfunct=0x21 & RS32src & RT32src {
+	tmp1:8 = zext(RS32src);
+	tmp2:8 = zext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo1 = lo1 & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi1) << 32) + zext(lo1) + prod;
+    lo1 = sext(sum:4);
+    sum = sum >> 32;
+    hi1 = sext(sum:4); 
+}
+
+# 0111 00ss ssst tttt 0000 0000 0000 0001
+:maddu1 RD, RS32src, RT32src             is prime=0x1C & RD & bigfunct=0x21 & RS32src & RT32src {
+	tmp1:8 = zext(RS32src);
+	tmp2:8 = zext(RT32src);
+	prod:8 = tmp1 * tmp2;
+    lo1 = lo1 & 0xffffffff;       # Make sure any upper bits of lo don't contribute to sum
+	sum:8 = (zext(hi1) << 32) + zext(lo1) + prod;
+    lo1 = sext(sum:4);
+    sum = sum >> 32;
+    hi1 = sext(sum:4);
+    RD = prod;
+}
+# 0000 0000 0000 0000 dddd d000 0001 0010
+:mfhi1 RD                        is prime=0x1C & rs=0 & rt=0 & RD & bigfunct=0x10 { 
+    RD = hi1; 
+}
+# 0000 0000 0000 0000 dddd d000 0001 0000
+:mflo1 RD                        is prime=0x1C & rs=0 & rt=0 & RD & bigfunct=0x12 { 
+    RD = lo1; 
+}
+# 0000 0000 0000 0000 dddd d000 0001 0010
+:mthi1 RSsrc                        is prime=0x1C & rd=0 & rt=0 & RSsrc & bigfunct=0x11 { 
+    hi1 = RSsrc; 
+}
+# 0000 0000 0000 0000 dddd d000 0001 0000
+:mtlo1 RSsrc                        is prime=0x1C & rd=0 & rt=0 & RSsrc & bigfunct=0x13 { 
+    lo1 = RSsrc; 
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1000
+:mult1 RS32src, RT32src              is prime=0x1C & fct=24 & RS32src & RT32src & rd=0 & sa=0 {
+    tmp1:8 = sext( RS32src );
+    tmp2:8 = sext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo1 = sext(prod:4);    
+    prod = prod >> 32;
+    hi1 = sext(prod:4);    
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1001
+:multu1 RS32src, RT32src             is prime=0x1C & fct=25 & RS32src & RT32src & rd=0 & sa=0 { 
+    tmp1:8 = zext( RS32src );
+    tmp2:8 = zext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo1 = sext(prod:4);    
+    prod = prod >> 32;
+    hi1 = sext(prod:4); 
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1000
+:mult1 RD, RS32src, RT32src              is prime=0x1C & fct=24 & RS32src & RT32src & RD & sa=0 {
+    tmp1:8 = sext( RS32src );
+    tmp2:8 = sext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo1 = sext(prod:4);    
+    prod = prod >> 32;
+    hi1 = sext(prod:4);  
+    RD = prod;  
+}
+# 0000 00ss ssst tttt 0000 0000 0001 1001
+:multu1 RD, RS32src, RT32src             is prime=0x1C & fct=25 & RS32src & RT32src & RD & sa=0 { 
+    tmp1:8 = zext( RS32src );
+    tmp2:8 = zext( RT32src );
+    prod:8 = tmp1 * tmp2;
+    lo1 = sext(prod:4);    
+    prod = prod >> 32;
+    hi1 = sext(prod:4); 
+    RD = prod;
+}
+:pabsh RD, RTsrc                        is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=5 & fct=0x28 {
+    RD[0,2] = abs(RTsrc[0,2]);
+    RD[2,4] = abs(RTsrc[2,4]);
+    RD[4,6] = abs(RTsrc[4,6]);
+    RD[6,8] = abs(RTsrc[6,8]);
+    RD128[0,2] = abs(RT128src[0,2]);
+    RD128[2,4] = abs(RT128src[2,4]);
+    RD128[4,6] = abs(RT128src[4,6]);
+    RD128[6,8] = abs(RT128src[6,8]);
+}
+:pabsw RD, RTsrc                        is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=1 & fct=0x28 {
+    RD[0,4] = abs(RTsrc[0,4]);
+    RD[4,8] = abs(RTsrc[4,8]);
+    RD128[0,4] = abs(RT128src[0,4]);
+    RD128[4,8] = abs(RT128src[4,8]);
+}
+:paddb RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=8 & fct=8 {
+    RD[0,1] = RTsrc[0,1] + RSsrc[0,1];
+    RD[1,2] = RTsrc[1,2] + RSsrc[1,2];
+    RD[2,3] = RTsrc[2,3] + RSsrc[2,3];
+    RD[3,4] = RTsrc[3,4] + RSsrc[3,4];
+    RD[4,5] = RTsrc[4,5] + RSsrc[4,5];
+    RD[5,6] = RTsrc[5,6] + RSsrc[5,6];
+    RD[6,7] = RTsrc[6,7] + RSsrc[6,7];
+    RD[7,8] = RTsrc[7,8] + RSsrc[7,8];
+    RD128[0,1] = RT128src[0,1] + RS128src[0,1];
+    RD128[1,2] = RT128src[1,2] + RS128src[1,2];
+    RD128[2,3] = RT128src[2,3] + RS128src[2,3];
+    RD128[3,4] = RT128src[3,4] + RS128src[3,4];
+    RD128[4,5] = RT128src[4,5] + RS128src[4,5];
+    RD128[5,6] = RT128src[5,6] + RS128src[5,6];
+    RD128[6,7] = RT128src[6,7] + RS128src[6,7];
+    RD128[7,8] = RT128src[7,8] + RS128src[7,8];
+}
+:paddh RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=4 & fct=8 {
+    RD[0,2] = RTsrc[0,2] + RSsrc[0,2];
+    RD[2,4] = RTsrc[2,3] + RSsrc[2,4];
+    RD[4,6] = RTsrc[4,6] + RSsrc[4,6];
+    RD[6,8] = RTsrc[6,8] + RSsrc[6,8];
+    RD128[0,2] = RT128src[0,2] + RS128src[0,1];
+    RD128[2,4] = RT128src[2,4] + RS128src[2,4];
+    RD128[4,6] = RT128src[4,6] + RS128src[4,6];
+    RD128[6,8] = RT128src[6,8] + RS128src[6,8];
+}
+:paddsb RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x18 & fct=8 {
+    sSatByte(RD[0,1], RTsrc[0,1] + RSsrc[0,1]);
+    sSatByte(RD[1,2], RTsrc[1,2] + RSsrc[1,2]);
+    sSatByte(RD[2,3], RTsrc[2,3] + RSsrc[2,3]);
+    sSatByte(RD[3,4], RTsrc[3,4] + RSsrc[3,4]);
+    sSatByte(RD[4,5], RTsrc[4,5] + RSsrc[4,5]);
+    sSatByte(RD[5,6], RTsrc[5,6] + RSsrc[5,6]);
+    sSatByte(RD[6,7], RTsrc[6,7] + RSsrc[6,7]);
+    sSatByte(RD[7,8], RTsrc[7,8] + RSsrc[7,8]);
+    sSatByte(RD128[0,1], RT128src[0,1] + RS128src[0,1]);
+    sSatByte(RD128[1,2], RT128src[1,2] + RS128src[1,2]);
+    sSatByte(RD128[2,3], RT128src[2,3] + RS128src[2,3]);
+    sSatByte(RD128[3,4], RT128src[3,4] + RS128src[3,4]);
+    sSatByte(RD128[4,5], RT128src[4,5] + RS128src[4,5]);
+    sSatByte(RD128[5,6], RT128src[5,6] + RS128src[5,6]);
+    sSatByte(RD128[6,7], RT128src[6,7] + RS128src[6,7]);
+    sSatByte(RD128[7,8], RT128src[7,8] + RS128src[7,8]);
+}
+:paddsh RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x14 & fct=8 {
+    sSatHalfWord(RD[0,2], RTsrc[0,2] + RSsrc[0,2]);
+    sSatHalfWord(RD[2,4], RTsrc[2,4] + RSsrc[2,4]);
+    sSatHalfWord(RD[4,6], RTsrc[4,6] + RSsrc[4,6]);
+    sSatHalfWord(RD[6,8], RTsrc[6,8] + RSsrc[6,8]);
+    sSatHalfWord(RD128[0,2], RT128src[0,2] + RS128src[0,2]);
+    sSatHalfWord(RD128[2,4], RT128src[2,4] + RS128src[2,4]);
+    sSatHalfWord(RD128[4,6], RT128src[4,6] + RS128src[4,6]);
+    sSatHalfWord(RD128[6,8], RT128src[6,8] + RS128src[6,8]);
+}
+:paddsw RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RT128src & RS128src & sa=0x10 & fct=0x8 {
+    sSatWord(RD[0,4], RTsrc[0,4] + RSsrc[0,4]);
+    sSatWord(RD[4,8], RTsrc[4,8] + RSsrc[4,8]);
+    sSatWord(RD128[0,4], RT128src[0,4] + RS128src[0,4]);
+    sSatWord(RD128[4,8], RT128src[4,8] + RS128src[4,8]);
+}
+
+:paddub RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x18 & fct=0x28 {
+    uSatByte(RD[0,1], RTsrc[0,1] + RSsrc[0,1]);
+    uSatByte(RD[1,2], RTsrc[1,2] + RSsrc[1,2]);
+    uSatByte(RD[2,3], RTsrc[2,3] + RSsrc[2,3]);
+    uSatByte(RD[3,4], RTsrc[3,4] + RSsrc[3,4]);
+    uSatByte(RD[4,5], RTsrc[4,5] + RSsrc[4,5]);
+    uSatByte(RD[5,6], RTsrc[5,6] + RSsrc[5,6]);
+    uSatByte(RD[6,7], RTsrc[6,7] + RSsrc[6,7]);
+    uSatByte(RD[7,8], RTsrc[7,8] + RSsrc[7,8]);
+    uSatByte(RD128[0,1], RT128src[0,1] + RS128src[0,1]);
+    uSatByte(RD128[1,2], RT128src[1,2] + RS128src[1,2]);
+    uSatByte(RD128[2,3], RT128src[2,3] + RS128src[2,3]);
+    uSatByte(RD128[3,4], RT128src[3,4] + RS128src[3,4]);
+    uSatByte(RD128[4,5], RT128src[4,5] + RS128src[4,5]);
+    uSatByte(RD128[5,6], RT128src[5,6] + RS128src[5,6]);
+    uSatByte(RD128[6,7], RT128src[6,7] + RS128src[6,7]);
+    uSatByte(RD128[7,8], RT128src[7,8] + RS128src[7,8]);
+}
+:padduh RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x14 & fct=0x28 {
+    uSatHalfWord(RD[0,2], RTsrc[0,2] + RSsrc[0,2]);
+    uSatHalfWord(RD[2,4], RTsrc[2,4] + RSsrc[2,4]);
+    uSatHalfWord(RD[4,6], RTsrc[4,6] + RSsrc[4,6]);
+    uSatHalfWord(RD[6,8], RTsrc[6,8] + RSsrc[6,8]);
+    uSatHalfWord(RD128[0,2], RT128src[0,2] + RS128src[0,2]);
+    uSatHalfWord(RD128[2,4], RT128src[2,4] + RS128src[2,4]);
+    uSatHalfWord(RD128[4,6], RT128src[4,6] + RS128src[4,6]);
+    uSatHalfWord(RD128[6,8], RT128src[6,8] + RS128src[6,8]);
+}
+:padduw RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RT128src & RS128src & sa=0x10 & fct=0x28 {
+    uSatWord(RD[0,4], RTsrc[0,4] + RSsrc[0,4]);
+    uSatWord(RD[4,8], RTsrc[4,8] + RSsrc[4,8]);
+    uSatWord(RD128[0,4], RT128src[0,4] + RS128src[0,4]);
+    uSatWord(RD128[4,8], RT128src[4,8] + RS128src[4,8]);
+}
+# Special Case
+:padduw RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & rt=0 & rs=0 & sa=0x10 & fct=0x28 {
+    RD = 0;
+    RD128 = 0;
+}
+:paddw RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RT128src & RS128src & sa=0 & fct=0x8 {
+    RD[0,4] = RTsrc[0,4] + RSsrc[0,4];
+    RD[4,8] = RTsrc[4,8] + RSsrc[4,8];
+    RD128[0,4] = RT128src[0,4] + RS128src[0,4];
+    RD128[4,8] = RT128src[4,8] + RS128src[4,8];
+}
+:padsbh RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=4 & fct=0x28 {
+    RD[0,2] = RSsrc[0,2] - RTsrc[0,2];
+    RD[2,4] = RSsrc[2,4] - RTsrc[2,3];
+    RD[4,6] = RSsrc[4,6] - RTsrc[4,6];
+    RD[6,8] = RSsrc[6,8] - RTsrc[6,8];
+    RD128[0,2] = RT128src[0,2] + RS128src[0,1];
+    RD128[2,4] = RT128src[2,4] + RS128src[2,4];
+    RD128[4,6] = RT128src[4,6] + RS128src[4,6];
+    RD128[6,8] = RT128src[6,8] + RS128src[6,8];
+}
+:pand RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x12 & fct=0x9 {
+    RD = RSsrc & RTsrc;
+    tmp = RT128src & RS128src;
+}
+:pceqb RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0xA & fct=0x28 {
+    pEqual(RD[0,1], RTsrc[0,1], RSsrc[0,1]);
+    pEqual(RD[1,2], RTsrc[1,2], RSsrc[1,2]);
+    pEqual(RD[2,3], RTsrc[2,3], RSsrc[2,3]);
+    pEqual(RD[3,4], RTsrc[3,4], RSsrc[3,4]);
+    pEqual(RD[4,5], RTsrc[4,5], RSsrc[4,5]);
+    pEqual(RD[5,6], RTsrc[5,6], RSsrc[5,6]);
+    pEqual(RD[6,7], RTsrc[6,7], RSsrc[6,7]);
+    pEqual(RD[7,8], RTsrc[7,8], RSsrc[7,8]);
+    pEqual(RD128[0,1], RT128src[0,1], RS128src[0,1]);
+    pEqual(RD128[1,2], RT128src[1,2], RS128src[1,2]);
+    pEqual(RD128[2,3], RT128src[2,3], RS128src[2,3]);
+    pEqual(RD128[3,4], RT128src[3,4], RS128src[3,4]);
+    pEqual(RD128[4,5], RT128src[4,5], RS128src[4,5]);
+    pEqual(RD128[5,6], RT128src[5,6], RS128src[5,6]);
+    pEqual(RD128[6,7], RT128src[6,7], RS128src[6,7]);
+    pEqual(RD128[7,8], RT128src[7,8], RS128src[7,8]);
+}
+:pceqh RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x6 & fct=0x28 {
+    pEqual(RD[0,2], RTsrc[0,2], RSsrc[0,2]);
+    pEqual(RD[2,4], RTsrc[2,4], RSsrc[2,4]);
+    pEqual(RD[4,6], RTsrc[4,6], RSsrc[4,6]);
+    pEqual(RD[6,8], RTsrc[6,8], RSsrc[6,8]);
+    pEqual(RD128[0,2], RT128src[0,2], RS128src[0,2]);
+    pEqual(RD128[2,4], RT128src[2,4], RS128src[2,4]);
+    pEqual(RD128[4,6], RT128src[4,6], RS128src[4,6]);
+    pEqual(RD128[6,8], RT128src[6,8], RS128src[6,8]);
+}
+:pceqw RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x2 & fct=0x28 {
+    pEqual(RD[0,4], RTsrc[0,4], RSsrc[0,4]);
+    pEqual(RD[4,8], RTsrc[4,8], RSsrc[4,8]);
+    pEqual(RD128[0,4], RT128src[0,4], RS128src[0,4]);
+    pEqual(RD128[4,8], RT128src[4,8], RS128src[4,8]);
+}
+:pcgtb RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0xA & fct=0x8 {
+    pGreaterThan(RD[0,1], RSsrc[0,1], RTsrc[0,1]);
+    pGreaterThan(RD[1,2], RSsrc[1,2], RTsrc[1,2]);
+    pGreaterThan(RD[2,3], RSsrc[2,3], RTsrc[2,3]);
+    pGreaterThan(RD[3,4], RSsrc[3,4], RTsrc[3,4]);
+    pGreaterThan(RD[4,5], RSsrc[4,5], RTsrc[4,5]);
+    pGreaterThan(RD[5,6], RSsrc[5,6], RTsrc[5,6]);
+    pGreaterThan(RD[6,7], RSsrc[6,7], RTsrc[6,7]);
+    pGreaterThan(RD[7,8], RSsrc[7,8], RTsrc[7,8]);
+    pGreaterThan(RD128[0,1], RS128src[0,1], RT128src[0,1]);
+    pGreaterThan(RD128[1,2], RS128src[1,2], RT128src[1,2]);
+    pGreaterThan(RD128[2,3], RS128src[2,3], RT128src[2,3]);
+    pGreaterThan(RD128[3,4], RS128src[3,4], RT128src[3,4]);
+    pGreaterThan(RD128[4,5], RS128src[4,5], RT128src[4,5]);
+    pGreaterThan(RD128[5,6], RS128src[5,6], RT128src[5,6]);
+    pGreaterThan(RD128[6,7], RS128src[6,7], RT128src[6,7]);
+    pGreaterThan(RD128[7,8], RS128src[7,8], RT128src[7,8]);
+}
+:pcgth RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x6 & fct=0x8 {
+    pGreaterThan(RD[0,2], RSsrc[0,2], RTsrc[0,2]);
+    pGreaterThan(RD[2,4], RSsrc[2,4], RTsrc[2,4]);
+    pGreaterThan(RD[4,6], RSsrc[4,6], RTsrc[4,6]);
+    pGreaterThan(RD[6,8], RSsrc[6,8], RTsrc[6,8]);
+    pGreaterThan(RD128[0,2], RS128src[0,2], RT128src[0,2]);
+    pGreaterThan(RD128[2,4], RS128src[2,4], RT128src[2,4]);
+    pGreaterThan(RD128[4,6], RS128src[4,6], RT128src[4,6]);
+    pGreaterThan(RD128[6,8], RS128src[6,8], RT128src[6,8]);
+}
+:pcgtw RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x2 & fct=0x8 {
+    pGreaterThan(RD[0,4], RSsrc[0,4], RTsrc[0,4]);
+    pGreaterThan(RD[4,8], RSsrc[4,8], RTsrc[4,8]);
+    pGreaterThan(RD128[0,4], RS128src[0,4], RT128src[0,4]);
+    pGreaterThan(RD128[4,8], RS128src[4,8], RT128src[4,8]);
+}
+:pcpyh RD, RTsrc                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=0x1B & fct=0x29 {
+    RD[0,2] = RTsrc[0,2];
+    RD[2,4] = RTsrc[0,2];
+    RD[4,6] = RTsrc[0,2];
+    RD[6,8] = RTsrc[0,2];
+    RD128[0,2] = RT128src[0,2];
+    RD128[2,4] = RT128src[0,2];
+    RD128[4,6] = RT128src[0,2];
+    RD128[6,8] = RT128src[0,2];
+}
+:pcpyld RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & sa=0xE & fct=0x9 {
+    RD = RTsrc;
+    RD128 = RSsrc;
+}
+:pcpyud RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0xE & fct=0x29 {
+    RD = RS128src;
+    RD128 = RT128src;
+}
+:pdivbw RSsrc, RTsrc        is prime=0x1C & RSsrc & RTsrc & RS128src & rd=0 & sa=0x1D & fct=0x9 {
+    lo[0,4] = sext(RSsrc[0,4] s/ RTsrc[0,4]);
+    hi[0,4] = zext(RSsrc[0,4] s% RTsrc[0,4]);
+    lo[4,8] = sext(RSsrc[4,8] s/ RTsrc[0,4]);
+    hi[4,8] = zext(RSsrc[4,8] s% RTsrc[0,4]);
+    lo1[0,4] = sext(RS128src[0,4] s/ RTsrc[0,4]);
+    hi1[0,4] = zext(RS128src[0,4] s% RTsrc[0,4]);
+    lo1[4,8] = sext(RS128src[4,8] s/ RTsrc[0,4]);
+    hi1[4,8] = zext(RS128src[4,8] s% RTsrc[0,4]);
+}
+:pdivuw RS32src, RT32src        is prime=0x1C & RS32src & RT32src & RS128src & RT128src & rd=0 & sa=0xD & fct=0x29 {
+    lo = sext(RS32src / RT32src);
+    hi = sext(RS32src % RT32src);
+    lo1 = sext(RS128src:4 / RT128src:4);
+    hi1 = sext(RS128src:4 % RT128src:4);
+}
+:pdivw RS32src, RT32src         is prime=0x1C & RS32src & RT32src & RS128src & RT128src & rd=0 & sa=0xD & fct=0x9 {
+    lo = sext(RS32src s/ RT32src);
+    hi = sext(RS32src s% RT32src);
+    lo1 = sext(RS128src:4 s/ RT128src:4);
+    hi1 = sext(RS128src:4 s% RT128src:4);
+}
+:pexch RD, RTsrc                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=0x1A & fct=0x29 {
+    RD[0,2] = RTsrc[0,2];
+    RD[2,4] = RTsrc[4,6];
+    RD[4,6] = RTsrc[2,4];
+    RD[6,8] = RTsrc[6,8];
+    RD128[0,2] = RT128src[0,2];
+    RD128[2,4] = RT128src[4,6];
+    RD128[4,6] = RT128src[2,4];
+    RD128[6,8] = RT128src[6,8];
+}
+:pexcw RD, RTsrc                is prime=0x1C & RD & RTsrc & RT128src & RD128 & rs=0 & sa=0x1E & fct=0x29 {
+    RD[0,4] = RTsrc[0,4];
+    RD128[0,4] = RTsrc[4,8];
+    RD[4,8] = RT128src[0,4];
+    RD128[4,8] = RT128src[4,8];
+}
+:pexeh RD, RTsrc                is prime=0x1C & RD & RTsrc & RT128src & RD128 & rs=0 & sa=0x1A & fct=0x9 {
+    RD[0,2] = RTsrc[4,6];
+    RD[2,4] = RTsrc[2,4];
+    RD[4,6] = RTsrc[0,2];
+    RD[6,8] = RTsrc[6,8];
+    RD128[0,2] = RT128src[4,6];
+    RD128[2,4] = RT128src[2,4];
+    RD128[4,6] = RT128src[0,2];
+    RD128[6,8] = RT128src[6,8];
+}
+:pexew RD, RTsrc                is prime=0x1C & RD & RTsrc & RT128src & RD128 & rs=0 & sa=0x1E & fct=0x9 {
+    RD[0,4] = RT128src[0,4];
+    RD[4,8] = RTsrc[4,8];
+    RD128[0,4] = RTsrc[0,4];
+    RD128[4,8] = RT128src[4,8];
+}
+:pext5 RD, RTsrc                is prime=0x1C & RD & RTsrc & RT128src & RD128 & rs=0 & sa=0x1E & fct=0x8 {
+    RD[0,4] = ((RTsrc[0,2] & 0x1F) | ((RTsrc[0,2] & 0x3E0) >> 5) | ((RTsrc[0,2] & 0x7C00) >> 10) | ((RTsrc[0,2] & 0x8000) >> 15));
+    RD[4,8] = ((RTsrc[4,6] & 0x1F) | ((RTsrc[4,6] & 0x3E0) >> 5) | ((RTsrc[4,6] & 0x7C00) >> 10) | ((RTsrc[4,6] & 0x8000) >> 15));
+    RD128[0,4] = ((RT128src[0,2] & 0x1F) | ((RT128src[0,2] & 0x3E0) >> 5) | ((RT128src[0,2] & 0x7C00) >> 10) | ((RT128src[0,2] & 0x8000) >> 15));
+    RD128[4,8] = ((RT128src[4,6] & 0x1F) | ((RT128src[4,6] & 0x3E0) >> 5) | ((RT128src[4,6] & 0x7C00) >> 10) | ((RT128src[4,6] & 0x8000) >> 15));
+}
+:pextlb RD, RSsrc, RTsrc        is prime=0x1C & RD & RD128 & RSsrc & RTsrc & sa=0x1A & fct=0x8 {
+    RD[0,1] = RTsrc[0,1];
+    RD[1,2] = RSsrc[0,1];
+    RD[2,3] = RTsrc[1,2];
+    RD[3,4] = RSsrc[1,2];
+    RD[4,5] = RTsrc[2,3];
+    RD[5,6] = RSsrc[2,3];
+    RD[6,7] = RTsrc[3,4];
+    RD[7,8] = RSsrc[3,4];
+    RD128[0,1] = RTsrc[4,5];
+    RD128[1,2] = RSsrc[4,5];
+    RD128[2,3] = RTsrc[5,6];
+    RD128[3,4] = RSsrc[5,6];
+    RD128[4,5] = RTsrc[6,7];
+    RD128[5,6] = RSsrc[6,7];
+    RD128[6,7] = RTsrc[7,8];
+    RD128[7,8] = RSsrc[7,8];
+}
+:pextlh RD, RSsrc, RTsrc        is prime=0x1C & RD & RD128 & RSsrc & RTsrc & sa=0x16 & fct=0x8 {
+    RD[0,2] = RTsrc[0,2];
+    RD[2,4] = RSsrc[0,2];
+    RD[4,6] = RTsrc[2,4];
+    RD[6,8] = RSsrc[2,4];
+    RD128[0,2] = RTsrc[4,6];
+    RD128[2,4] = RSsrc[4,6];
+    RD128[4,6] = RTsrc[6,8];
+    RD128[6,8] = RSsrc[6,8];
+}
+:pextlw RD, RSsrc, RTsrc        is prime=0x1C & RD & RD128 & RSsrc & RTsrc & sa=0x12 & fct=0x8 {
+    RD[0,4] = RTsrc[0,4];
+    RD[4,8] = RSsrc[0,4];
+    RD128[0,4] = RTsrc[4,8];
+    RD128[4,8] = RSsrc[4,8];
+}
+:pextub RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RT128src & RTsrc & sa=0x1A & fct=0x28 {
+    RD[0,1] = RT128src[0,1];
+    RD[1,2] = RS128src[0,1];
+    RD[2,3] = RT128src[1,2];
+    RD[3,4] = RS128src[1,2];
+    RD[4,5] = RT128src[2,3];
+    RD[5,6] = RS128src[2,3];
+    RD[6,7] = RT128src[3,4];
+    RD[7,8] = RS128src[3,4];
+    RD128[0,1] = RT128src[4,5];
+    RD128[1,2] = RS128src[4,5];
+    RD128[2,3] = RT128src[5,6];
+    RD128[3,4] = RS128src[5,6];
+    RD128[4,5] = RT128src[6,7];
+    RD128[5,6] = RS128src[6,7];
+    RD128[6,7] = RT128src[7,8];
+    RD128[7,8] = RS128src[7,8];
+}
+:pextuh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x16 & fct=0x28 {
+    RD[0,2] = RT128src[0,2];
+    RD[2,4] = RS128src[0,2];
+    RD[4,6] = RT128src[2,4];
+    RD[6,8] = RS128src[2,4];
+    RD128[0,2] = RT128src[4,6];
+    RD128[2,4] = RS128src[4,6];
+    RD128[4,6] = RT128src[6,8];
+    RD128[6,8] = RS128src[6,8];
+}
+:pextuw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x12 & fct=0x28 {
+    RD[0,4] = RT128src[0,4];
+    RD[4,8] = RS128src[0,4];
+    RD128[0,4] = RT128src[4,8];
+    RD128[4,8] = RS128src[4,8];
+}
+:phmadh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x11 & fct=0x9 {
+    product0:4 = sext((RSsrc[2,4] * RTsrc[2,4]) + (RSsrc[0,2] * RTsrc[0,2]));
+    lo[0,4] = product0;
+    RD[0,4] = product0;
+    product1:4 = sext((RSsrc[6,8] * RTsrc[6,8]) + (RSsrc[4,6] * RTsrc[4,6]));
+    hi[0,4] = product1;
+    RD[4,8] = product1;
+    product2:4 = sext((RS128src[2,4] * RT128src[2,4]) + (RS128src[0,2] * RT128src[0,2]));
+    lo1[0,4] = product2;
+    RD128[0,4] = product2;
+    product3:4 = sext((RS128src[6,8] * RT128src[6,8]) + (RS128src[4,6] * RT128src[4,6]));
+    hi1[0,4] = product3;
+    RD128[4,8] = product3;
+}
+:phmsdh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x15 & fct=0x9 {
+    product0:4 = sext((RSsrc[2,4] * RTsrc[2,4]) - (RSsrc[0,2] * RTsrc[0,2]));
+    lo[0,4] = product0;
+    RD[0,4] = product0;
+    product1:4 = sext((RSsrc[6,8] * RTsrc[6,8]) - (RSsrc[4,6] * RTsrc[4,6]));
+    hi[0,4] = product1;
+    RD[4,8] = product1;
+    product2:4 = sext((RS128src[2,4] * RT128src[2,4]) - (RS128src[0,2] * RT128src[0,2]));
+    lo1[0,4] = product2;
+    RD128[0,4] = product2;
+    product3:4 = sext((RS128src[6,8] * RT128src[6,8]) - (RS128src[4,6] * RT128src[4,6]));
+    hi1[0,4] = product3;
+    RD128[4,8] = product3;
+}
+:pinteh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0xA & fct=0x29 {
+    RD[0,2] = RTsrc[0,2];
+    RD[2,4] = RSsrc[0,2];
+    RD[4,6] = RTsrc[4,6];
+    RD[6,8] = RSsrc[4,6];
+    RD128[0,2] = RT128src[0,2];
+    RD128[2,4] = RS128src[2,2];
+    RD128[4,6] = RT128src[4,6];
+    RD128[6,8] = RS128src[4,6];
+}
+:pinth RD, RSsrc, RTsrc        is prime=0x1C & RD & RD128 & RSsrc & RS128src & RTsrc & sa=0xA & fct=0x9 {
+    RD[0,2] = RTsrc[0,2];
+    RD[2,4] = RS128src[0,2];
+    RD[4,6] = RTsrc[2,4];
+    RD[6,8] = RS128src[2,4];
+    RD128[0,2] = RTsrc[4,6];
+    RD128[2,4] = RS128src[4,6];
+    RD128[4,6] = RTsrc[6,8];
+    RD128[6,8] = RS128src[6,8];
+}
+:plzcw RD, RSsrc            is prime=0x1C & RD & RSsrc & rt=0 & sa=0 & fct=0x4 {
+    if (RSsrc[0,4] s< 0) goto <lower_ones>;
+    RD[0,4] = countLeadingZeros(RSsrc[0,4]) - 1;
+    goto <upper>;
+    <lower_ones>
+    RD[0,4] = countLeadingOnes(RSsrc[0,4]) - 1;
+    <upper>
+    if (RSsrc[4,8] s< 0) goto <upper_ones>;
+    RD[4,8] = countLeadingZeros(RSsrc[4,8]) - 1;
+    goto <end>;
+    <upper_ones>
+    RD[4,8] = countLeadingOnes(RSsrc[4,8]) - 1;
+    <end>
+}
+:pmaddh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x10 & fct=0x9 {
+    # This is HIDEOUS!
+    tmp1:4 = sext(RSsrc[0,2]);
+    tmp2:4 = sext(RTsrc[0,2]);
+    product0:4 = tmp1 * tmp2;
+    sum0:4 = lo:4 + product0;
+    lo[0,4] = sum0;
+    RD[0,4] = sum0;
+    tmp3:4 = sext(RSsrc[2,4]);
+    tmp4:4 = sext(RTsrc[2,4]);
+    product1:4 = tmp3 * tmp4;
+    tmplo0:4 = lo[4,8];
+    sum1:4 = tmplo0 + product1;
+    lo[4,8] = sum1;
+    tmp5:4 = sext(RSsrc[4,6]);
+    tmp6:4 = sext(RTsrc[4,6]);
+    product2:4 = tmp5 * tmp6;
+    sum2:4 = hi:4 + product2;
+    hi[0,4] = sum2;
+    RD[4,8] = sum2;
+    tmp7:4 = sext(RSsrc[6,8]);
+    tmp8:4 = sext(RTsrc[6,8]);
+    product3:4 = tmp7 * tmp8;
+    tmphi0:4 = hi[4,8];
+    sum3:4 = tmphi0 + product3;
+    hi[4,8] = sum3;
+
+    tmp1_upper:4 = sext(RS128src[0,2]);
+    tmp2_upper:4 = sext(RT128src[0,2]);
+    product0_upper:4 = tmp1_upper * tmp2_upper;
+    sum0_upper:4 = lo1:4 + product0_upper;
+    lo1[0,4] = sum0_upper;
+    RD128[0,4] = sum0_upper;
+    tmp3_upper:4 = sext(RS128src[2,4]);
+    tmp4_upper:4 = sext(RT128src[2,4]);
+    product1_upper:4 = tmp3_upper * tmp4_upper;
+    tmplo1:4 = lo1[4,8];
+    sum1_upper:4 = tmplo1 + product1_upper;
+    lo1[4,8] = sum1_upper;
+    tmp5_upper:4 = sext(RS128src[4,6]);
+    tmp6_upper:4 = sext(RT128src[4,6]);
+    product2_upper:4 = tmp5_upper * tmp6_upper;
+    sum2_upper:4 = hi1:4 + product2_upper;
+    hi1[0,4] = sum2_upper;
+    RD128[4,8] = sum2_upper;
+    tmp7_upper:4 = sext(RS128src[6,8]);
+    tmp8_upper:4 = sext(RT128src[6,8]);
+    product3_upper:4 = tmp7_upper * tmp8_upper;
+    tmphi1:4 = hi1[4,8];
+    sum3_upper:4 = tmphi1 + product3_upper;
+    hi1[4,8] = sum3_upper;
+}
+:pmadduw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x0 & fct=0x29 {
+    # This is HIDEOUS!
+    tmp0:8 = zext(RSsrc[0,4]);
+    tmp1:8 = zext(RTsrc[0,4]);
+    product0:8 = tmp0 * tmp1;
+    lotmp:8 = sext(lo:4);
+    hitmp:8 = sext(hi:4);
+    lo = lotmp + product0;
+    hi = hitmp + product0;
+    RD = product0;
+    tmp2:8 = zext(RS128src[0,4]);
+    tmp3:8 = zext(RT128src[0,4]);
+    product1:8 = tmp2 * tmp3;
+    lo1tmp:8 = sext(lo1:4);
+    hi1tmp:8 = sext(hi1:4);
+    lo1 = lo1tmp + product1;
+    hi1 = hi1tmp + product1;
+    RD128 = product1;
+}
+:pmaddw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x0 & fct=0x9 {
+    # This is HIDEOUS!
+    tmp0:8 = sext(RSsrc[0,4]);
+    tmp1:8 = sext(RTsrc[0,4]);
+    product0:8 = tmp0 * tmp1;
+    lotmp:8 = sext(lo:4);
+    hitmp:8 = sext(hi:4);
+    lo = lotmp + product0;
+    hi = hitmp + product0;
+    RD = product0;
+    tmp2:8 = sext(RS128src[0,4]);
+    tmp3:8 = sext(RT128src[0,4]);
+    product1:8 = tmp2 * tmp3;
+    lo1tmp:8 = sext(lo1:4);
+    hi1tmp:8 = sext(hi1:4);
+    lo1 = lo1tmp + product1;
+    hi1 = hi1tmp + product1;
+    RD128 = product1;
+}
+:pmaxh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x7 & fct=0x8 {
+    setMax(RD[0,2], RSsrc[0,2], RTsrc[0,2]);
+    setMax(RD[2,4], RSsrc[2,4], RTsrc[2,4]);
+    setMax(RD[4,6], RSsrc[4,6], RTsrc[4,6]);
+    setMax(RD[6,8], RSsrc[6,8], RTsrc[6,8]);
+    setMax(RD128[0,2], RS128src[0,2], RT128src[0,2]);
+    setMax(RD128[2,4], RS128src[2,4], RT128src[2,4]);
+    setMax(RD128[4,6], RS128src[4,6], RT128src[4,6]);
+    setMax(RD128[6,8], RS128src[6,8], RT128src[6,8]);
+}
+:pmaxw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RD128 & RS128src & RTsrc & RT128src & sa=0x3 & fct=0x8 {
+    setMax(RD[0,4], RSsrc[0,4], RTsrc[0,4]);
+    setMax(RD[4,8], RSsrc[4,8], RTsrc[4,8]);
+    setMax(RD128[0,4], RS128src[0,4], RT128src[0,4]);
+    setMax(RD128[4,8], RS128src[4,8], RT128src[4,8]);
+}
+:pmfhi RD                       is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x8 & fct=0x9 {
+    RD = hi;
+    RD128 = hi1;
+}
+:pmfhl.lh RD                    is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x3 & fct=0x30 {
+    RD[0,2] = lo[0,2];
+    RD[2,4] = lo[6,8];
+    RD[4,6] = hi[0,2];
+    RD[6,8] = hi[6,8];
+    RD128[0,2] = lo1[0,2];
+    RD128[2,4] = lo1[6,8];
+    RD128[4,6] = hi1[0,2];
+    RD128[6,8] = hi1[6,8];
+}
+:pmfhl.lw RD                    is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x0 & fct=0x30 {
+    RD[0,4] = lo[0,4];
+    RD[4,8] = hi[0,4];
+    RD128[0,4] = lo1[0,4];
+    RD128[4,8] = hi1[0,4];
+}
+:pmfhl.sh RD                    is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x4 & fct=0x30 {
+    clampWord(RD[0,2], lo[0,4]);
+    clampWord(RD[2,4], lo[4,8]);
+    clampWord(RD[4,6], hi[0,4]);
+    clampWord(RD[6,8], hi[4,8]);
+    clampWord(RD128[0,2], lo1[0,4]);
+    clampWord(RD128[2,4], lo1[4,8]);
+    clampWord(RD128[4,6], hi1[0,4]);
+    clampWord(RD128[6,8], hi1[4,8]);
+}
+:pmfhl.slw RD                    is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x2 & fct=0x30 {
+    tmp0:8 = sext(lo:4 | hi:4);
+    tmp1:8 = sext(lo1:4 | hi1:4);
+    clampLongWordSext(RD, tmp0);
+    clampLongWordSext(RD128, tmp1);
+}
+:pmfhl.uw RD                    is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x1 & fct=0x30 {
+    RD[0,4] = lo[4,8];
+    RD[4,8] = hi[4,8];
+    RD128[0,4] = lo1[4,8];
+    RD128[4,8] = hi1[4,8];
+}
+:pmflo RD                       is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x9 & fct=0x9 {
+    RD = lo;
+    RD128 = lo1;
+}
+:pminh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x7 & fct=0x28 {
+    setMin(RD[0,2], RSsrc[0,2], RTsrc[0,2]);
+    setMin(RD[2,4], RSsrc[2,4], RTsrc[2,4]);
+    setMin(RD[4,6], RSsrc[4,6], RTsrc[4,6]);
+    setMin(RD[6,8], RSsrc[6,8], RTsrc[6,8]);
+    setMin(RD128[0,2], RS128src[0,2], RT128src[0,2]);
+    setMin(RD128[2,4], RS128src[2,4], RT128src[2,4]);
+    setMin(RD128[4,6], RS128src[4,6], RT128src[4,6]);
+    setMin(RD128[6,8], RS128src[6,8], RT128src[6,8]);
+}
+:pminw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x3 & fct=0x28 {
+    setMin(RD[0,4], RSsrc[0,4], RTsrc[0,4]);
+    setMin(RD[4,8], RSsrc[4,8], RTsrc[4,8]);
+    setMin(RD128[0,4], RS128src[0,4], RT128src[0,4]);
+    setMin(RD128[4,8], RS128src[4,8], RT128src[4,8]);
+}
+:pmsubh RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x14 & fct=0x9 {
+    # This is HIDEOUS!
+    tmp1:4 = sext(RSsrc[0,2]);
+    tmp2:4 = sext(RTsrc[0,2]);
+    product0:4 = tmp1 * tmp2;
+    sum0:4 = lo:4 - product0;
+    lo[0,4] = sum0;
+    RD[0,4] = sum0;
+    tmp3:4 = sext(RSsrc[2,4]);
+    tmp4:4 = sext(RTsrc[2,4]);
+    product1:4 = tmp3 * tmp4;
+    tmplo0:4 = lo[4,8];
+    sum1:4 = tmplo0 - product1;
+    lo[4,8] = sum1;
+    tmp5:4 = sext(RSsrc[4,6]);
+    tmp6:4 = sext(RTsrc[4,6]);
+    product2:4 = tmp5 * tmp6;
+    sum2:4 = hi:4 - product2;
+    hi[0,4] = sum2;
+    RD[4,8] = sum2;
+    tmp7:4 = sext(RSsrc[6,8]);
+    tmp8:4 = sext(RTsrc[6,8]);
+    product3:4 = tmp7 * tmp8;
+    tmphi0:4 = hi[4,8];
+    sum3:4 = tmphi0 - product3;
+    hi[4,8] = sum3;
+
+    tmp1_upper:4 = sext(RS128src[0,2]);
+    tmp2_upper:4 = sext(RT128src[0,2]);
+    product0_upper:4 = tmp1_upper * tmp2_upper;
+    sum0_upper:4 = lo1:4 - product0_upper;
+    lo1[0,4] = sum0_upper;
+    RD128[0,4] = sum0_upper;
+    tmp3_upper:4 = sext(RS128src[2,4]);
+    tmp4_upper:4 = sext(RT128src[2,4]);
+    product1_upper:4 = tmp3_upper * tmp4_upper;
+    tmplo1:4 = lo1[4,8];
+    sum1_upper:4 = tmplo1 - product1_upper;
+    lo1[4,8] = sum1_upper;
+    tmp5_upper:4 = sext(RS128src[4,6]);
+    tmp6_upper:4 = sext(RT128src[4,6]);
+    product2_upper:4 = tmp5_upper * tmp6_upper;
+    sum2_upper:4 = hi1:4 - product2_upper;
+    hi1[0,4] = sum2_upper;
+    RD128[4,8] = sum2_upper;
+    tmp7_upper:4 = sext(RS128src[6,8]);
+    tmp8_upper:4 = sext(RT128src[6,8]);
+    product3_upper:4 = tmp7_upper * tmp8_upper;
+    tmphi1:4 = hi1[4,8];
+    sum3_upper:4 = tmphi1 - product3_upper;
+    hi1[4,8] = sum3_upper;
+}
+:pmsubw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x4 & fct=0x9 {
+    # This is HIDEOUS!
+    tmp0:8 = sext(RSsrc[0,4]);
+    tmp1:8 = sext(RTsrc[0,4]);
+    product0:8 = tmp0 * tmp1;
+    lotmp:8 = sext(lo:4);
+    hitmp:8 = sext(hi:4);
+    lo = lotmp - product0;
+    hi = hitmp - product0;
+    RD = product0;
+    tmp2:8 = sext(RS128src[0,4]);
+    tmp3:8 = sext(RT128src[0,4]);
+    product1:8 = tmp2 * tmp3;
+    lo1tmp:8 = sext(lo1:4);
+    hi1tmp:8 = sext(hi1:4);
+    lo1 = lo1tmp - product1;
+    hi1 = hi1tmp - product1;
+    RD128 = product1;
+}
+:pmthi RD                       is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x8 & fct=0x29 {
+    hi = RD;
+    hi1 = RD128;
+}
+:pmthl.lw RD                    is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x0 & fct=0x31 {
+    lo[0,4] = RD[0,4];
+    hi[0,4] = RD[4,8];
+    lo1[0,4] = RD128[0,4];
+    hi1[0,4] = RD128[4,8];
+}
+:pmtlo RD                       is prime=0x1C & RD & RD128 & rs=0 & rt=0 & sa=0x9 & fct=0x29 {
+    lo = RD;
+    lo1 = RD128;
+}
+:pmulth RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x1C & fct=0x9 {
+    # This is HIDEOUS!
+    product0:4 = 0;
+    product1:4 = 0;
+    product2:4 = 0;
+    product3:4 = 0;
+    product4:4 = 0;
+    product5:4 = 0;
+    product6:4 = 0;
+    product7:4 = 0;
+    multToSignedWord(product0, RSsrc[0,2], RTsrc[0,2]);
+    multToSignedWord(product1, RSsrc[2,4], RTsrc[2,4]);
+    multToSignedWord(product2, RSsrc[4,6], RTsrc[4,6]);
+    multToSignedWord(product3, RSsrc[6,8], RTsrc[6,8]);
+    multToSignedWord(product4, RS128src[0,2], RT128src[0,2]);
+    multToSignedWord(product5, RS128src[2,4], RT128src[2,4]);
+    multToSignedWord(product6, RS128src[4,6], RT128src[4,6]);
+    multToSignedWord(product7, RS128src[6,8], RT128src[6,8]);
+    lo[0,4] = product0;
+    RD[0,4] = product0;
+    lo[4,8] = product1;
+    hi[0,4] = product2;
+    RD[4,8] = product2;
+    hi[4,8] = product3;
+    lo1[0,4] = product4;
+    RD128[0,4] = product4;
+    lo1[4,8] = product5;
+    RD128[4,8] = product6;
+    hi1[0,4] = product6;
+    hi1[4,8] = product7;
+}
+:pmultuw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0xC & fct=0x29 {
+    RD_tmp:8 = 0;
+    RD_tmp1:8 = 0;
+    tmp0:8 = zext(lo:4 | hi:4);
+    tmp1:8 = zext(lo1:4 | hi1:4);
+    clampLongWordZext(RD_tmp1, tmp0);
+    clampLongWordZext(RD_tmp, tmp1);
+    RD = RD_tmp1;
+    RD128 = RD_tmp;
+    lo = sext(RD_tmp1[0,4]);
+    hi = sext(RD_tmp1[4,8]);
+    lo1 = sext(RD_tmp[0,4]);
+    hi1 = sext(RD_tmp[4,8]);
+}
+:pnor RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x13 & fct=0x29 {
+    RD = ~(RSsrc | RTsrc);
+    RD128 = ~(RS128src | RT128src);
+}
+:por RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x12 & fct=0x29 {
+    RD = (RSsrc | RTsrc);
+    RD128 = (RS128src | RT128src);
+}
+:ppac5 RD, RTsrc                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=0x1F & fct=0x8 {
+    mask:4 = 0x80F8F8F8;
+    word0:4 = RTsrc:4;
+    word1:4 = RTsrc[4,8];
+    word2:4 = RT128src:4;
+    word3:4 = RT128src[4,8];
+    word0 = (word0 & mask);
+    word1 = (word1 & mask);
+    word2 = (word2 & mask);
+    word3 = (word3 & mask);
+    RD[0,4] = word0;
+    RD[4,8] = word1;
+    RD128[0,4] = word2;
+    RD128[4,8] = word3;
+}
+:ppacb RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x1B & fct=0x8 {
+    RD[0,1] = RTsrc[0,1];
+    RD[1,2] = RTsrc[2,3];
+    RD[2,3] = RTsrc[4,5];
+    RD[3,4] = RTsrc[6,7];
+    RD[4,5] = RT128src[0,1];
+    RD[5,6] = RT128src[2,3];
+    RD[6,7] = RT128src[4,5];
+    RD[7,8] = RT128src[6,7];
+    RD128[0,1] = RSsrc[0,1];
+    RD128[1,2] = RSsrc[2,3];
+    RD128[2,3] = RSsrc[4,5];
+    RD128[3,4] = RSsrc[6,7];
+    RD128[4,5] = RS128src[0,1];
+    RD128[5,6] = RS128src[2,3];
+    RD128[6,7] = RS128src[4,5];
+    RD128[7,8] = RS128src[6,7];
+}
+:ppach RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x17 & fct=0x8 {
+    RD[0,2] = RTsrc[0,2];
+    RD[2,4] = RTsrc[4,6];
+    RD[4,6] = RT128src[0,2];
+    RD[6,8] = RT128src[4,6];
+    RD128[0,2] = RSsrc[0,2];
+    RD128[2,4] = RSsrc[4,6];
+    RD128[4,6] = RS128src[0,2];
+    RD128[6,8] = RS128src[4,6];
+}
+:ppacw RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x13 & fct=0x8 {
+    RD[0,4] = RTsrc[0,4];
+    RD[4,8] = RT128src[0,4];
+    RD128[0,4] = RSsrc[0,4];
+    RD128[4,8] = RS128src[0,4];
+}
+:prevh RD, RTsrc                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=0x1B & fct=0x9 {
+    RD[0,2] = RTsrc[6,8];
+    RD[2,4] = RTsrc[4,6];
+    RD[4,6] = RTsrc[2,4];
+    RD[6,8] = RTsrc[0,2];
+    RD128[0,2] = RT128src[6,8];
+    RD128[2,4] = RT128src[4,6];
+    RD128[4,6] = RT128src[2,4];
+    RD128[6,8] = RT128src[0,2];
+}
+:prot3w RD, RTsrc                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa=0x1F & fct=0x9 {
+    RD[0,4] = RTsrc[4,8];
+    RD[4,8] = RT128src[4,8];
+    RD128[0,4] = RTsrc[0,4];
+    RD128[4,8] = RT128src[4,8];
+}
+:psllh RD, RTsrc, sa                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa & fct=0x34 {
+    RD[0,2] = RTsrc[0,1] << sa;
+    RD[2,4] = RTsrc[2,3] << sa;
+    RD[4,6] = RTsrc[4,5] << sa;
+    RD[6,8] = RTsrc[6,7] << sa;
+    RD128[0,2] = RT128src[0,1] << sa;
+    RD128[2,4] = RT128src[2,3] << sa;
+    RD128[4,6] = RT128src[4,5] << sa;
+    RD128[6,8] = RT128src[6,7] << sa;
+}
+:psllvw RD, RS32src, RT32src        is prime=0x1C & RD & RD128 & RS32src & RS128src_lo & RT32src & RT128src_lo & sa=0x2 & fct=0x9 {
+    mask:4 = 0x1F;
+    s:4 = RS32src & mask;
+    t:4 = RS128src_lo & mask;
+    RD = sext(RT32src << s);
+    RD128 = sext(RT128src_lo << t);
+}
+:psllw RD, RTsrc, sa                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa & fct=0x3C {
+    RD[0,4] = zext(RTsrc[0,2]) << sa:4;
+    RD[4,8] = zext(RTsrc[4,6]) << sa:4;
+    RD128[0,4] = zext(RT128src[0,2]) << sa:4;
+    RD128[4,8] = zext(RT128src[4,6]) << sa:4;
+}
+:psrah RD, RTsrc, sa                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa & fct=0x37 {
+    RD[0,2] = sext(RTsrc[0,1] s>> sa:1);
+    RD[2,4] = sext(RTsrc[2,3] s>> sa:1);
+    RD[4,6] = sext(RTsrc[4,5] s>> sa:1);
+    RD[6,8] = sext(RTsrc[6,7] s>> sa:1);
+    RD128[0,2] = sext(RT128src[0,1] s>> sa:1);
+    RD128[2,4] = sext(RT128src[2,3] s>> sa:1);
+    RD128[4,6] = sext(RT128src[4,5] s>> sa:1);
+    RD128[6,8] = sext(RT128src[6,7] s>> sa:1);
+}
+:psravw RD, RT32src, RS32src  is prime=0x1C & RD & RT32src & RD128 & RT128src_lo & RS32src & RS128src_lo & sa=3 & fct=0x29 {
+    mask:4 = 0x1F;
+    s:4 = RS32src & mask;
+    t:4 = RS128src_lo & mask;
+    RD = sext(RT32src s>> s);
+    RD128 = sext(RT128src_lo s>> t);
+}
+:psraw RD, RTsrc, sa                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa & fct=0x3F {
+    RD[0,4] = sext(RTsrc[2,4] s>> sa:2);
+    RD[4,8] = sext(RTsrc[6,8] s>> sa:2);
+    RD128[0,4] = sext(RT128src[2,4] s>> sa:2);
+    RD128[4,8] = sext(RT128src[6,8] s>> sa:2);
+}
+:psrlh RD, RTsrc, sa                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa & fct=0x36 {
+    RD[0,2] = zext(RTsrc[0,1] >> sa:1);
+    RD[2,4] = zext(RTsrc[2,3] >> sa:1);
+    RD[4,6] = zext(RTsrc[4,5] >> sa:1);
+    RD[6,8] = zext(RTsrc[6,7] >> sa:1);
+    RD128[0,2] = zext(RT128src[0,1] >> sa:1);
+    RD128[2,4] = zext(RT128src[2,3] >> sa:1);
+    RD128[4,6] = zext(RT128src[4,5] >> sa:1);
+    RD128[6,8] = zext(RT128src[6,7] >> sa:1);
+}
+:psrlvw RD, RT32src, RS32src  is prime=0x1C & RD & RT32src & RD128 & RT128src_lo & RS32src & RS128src_lo & sa=3 & fct=0x9 {
+    mask:4 = 0x1F;
+    s:4 = RS32src & mask;
+    t:4 = RS128src_lo & mask;
+    RD = zext(RT32src >> s);
+    RD128 = zext(RT128src_lo >> t);
+}
+:psrlw RD, RTsrc, sa                is prime=0x1C & RD & RTsrc & RD128 & RT128src & rs=0 & sa & fct=0x3E {
+    RD[0,4] = zext(RTsrc[2,4] >> sa:2);
+    RD[4,8] = zext(RTsrc[6,8] >> sa:2);
+    RD128[0,4] = zext(RT128src[2,4] >> sa:2);
+    RD128[4,8] = zext(RT128src[6,8] >> sa:2);
+}
+:psubb RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=9 & fct=8 {
+    RD[0,1] = RSsrc[0,1] - RTsrc[0,1];
+    RD[1,2] = RSsrc[1,2] - RTsrc[1,2];
+    RD[2,3] = RSsrc[2,3] - RTsrc[2,3];
+    RD[3,4] = RSsrc[3,4] - RTsrc[3,4];
+    RD[4,5] = RSsrc[4,5] - RTsrc[4,5];
+    RD[5,6] = RSsrc[5,6] - RTsrc[5,6];
+    RD[6,7] = RSsrc[6,7] - RTsrc[6,7];
+    RD[7,8] = RSsrc[7,8] - RTsrc[7,8];
+    RD128[0,1] = RS128src[0,1] - RT128src[0,1];
+    RD128[1,2] = RS128src[1,2] - RT128src[1,2];
+    RD128[2,3] = RS128src[2,3] - RT128src[2,3];
+    RD128[3,4] = RS128src[3,4] - RT128src[3,4];
+    RD128[4,5] = RS128src[4,5] - RT128src[4,5];
+    RD128[5,6] = RS128src[5,6] - RT128src[5,6];
+    RD128[6,7] = RS128src[6,7] - RT128src[6,7];
+    RD128[7,8] = RS128src[7,8] - RT128src[7,8];
+}
+:psubuh RD, RSsrc, RTsrc             is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x15 & fct=0x28 {
+    uSatHalfWord(RD[0,2], RSsrc[0,2] - RTsrc[0,2]);
+    uSatHalfWord(RD[2,4], RSsrc[2,3] - RTsrc[2,4]);
+    uSatHalfWord(RD[4,6], RSsrc[4,6] - RTsrc[4,6]);
+    uSatHalfWord(RD[6,8], RSsrc[6,8] - RTsrc[6,8]);
+    uSatHalfWord(RD128[0,2], RS128src[0,2] - RT128src[0,1]);
+    uSatHalfWord(RD128[2,4], RS128src[2,4] - RT128src[2,4]);
+    uSatHalfWord(RD128[4,6], RS128src[4,6] - RT128src[4,6]);
+    uSatHalfWord(RD128[6,8], RS128src[6,8] - RT128src[6,8]);
+}
+:psubuw RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RT128src & RS128src & sa=0x11 & fct=0x28 {
+    uSatWord(RD[0,4], RSsrc[0,4] - RTsrc[0,4]);
+    uSatWord(RD[4,8], RSsrc[4,8] - RTsrc[4,8]);
+    uSatWord(RD128[0,4], RS128src[0,4] - RT128src[0,4]);
+    uSatWord(RD128[4,8], RS128src[4,8] - RT128src[4,8]);
+}
+:psubw RD, RSsrc, RTsrc     is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RT128src & RS128src & sa=1 & fct=0x8 {
+    RD[0,4] = RSsrc[0,4] - RTsrc[0,4];
+    RD[4,8] = RSsrc[4,8] - RTsrc[4,8];
+    RD128[0,4] = RS128src[0,4] - RT128src[0,4];
+    RD128[4,8] = RS128src[4,8] - RT128src[4,8];
+}
+:pxor RD, RSsrc, RTsrc        is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x13 & fct=0x9 {
+    RD = (RSsrc ^ RTsrc);
+    RD128 = (RS128src ^ RT128src);
+}
+
+### CHECK ME! ###
+:qfsrv RD, RSsrc, RTsrc       is prime=0x1C & RD & RSsrc & RTsrc & RD128 & RS128src & RT128src & sa=0x1B & fct=0x28 {
+    if (sar == 0) goto <special_case>;
+    tmp0:8 = RTsrc >> sar;
+    tmp1:8 = RT128src >> sar;
+    bottom:8 = (((tmp1 << sar) ^ RT128src) << sar) | tmp0;
+    tmp0 = RSsrc >> sar;
+    low:8 = (((tmp0 << sar) ^ RS128src) << sar) | tmp1;
+    tmp1 = RS128src >> sar;
+    RD = low | bottom;
+    RD128 = (((tmp1 << sar) ^ RS128src) << sar) | tmp0;
+    goto <end>;
+    <special_case>
+    RD = RTsrc;
+    RD128 = RT128src;
+    <end>
+}

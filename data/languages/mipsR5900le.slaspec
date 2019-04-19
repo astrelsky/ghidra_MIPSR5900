@@ -1,0 +1,23 @@
+# SLA specification file for MIPS r5000 little endian
+
+@define NEEDCAST "1"
+@define ENDIAN "little"
+@define MIPS64 ""
+@define MIPS64_32ADDRS ""
+@define FREGSIZE "4"
+@define ISA_VARIANT ""
+@define REGSIZE "8"     # General purpose register size (8 or 4)
+@define ADDRSIZE "4"    # Memory address size (8 or 4, virtual and physical)
+@define SIZETO4  "4"   # In 32-bit mode, no truncation needed
+@define ADDRCAST ":4"   # need to down cast to pointer size
+
+@include "MIPS/mips.sinc"
+@include "mipsR5900Instructions.sinc"
+@include "macros.sinc"
+@include "MIPS/standard.sinc"
+@include "MIPS/special.sinc"
+@include "regimm.sinc"
+@include "mmi.sinc"
+@include "MIPS/cop0.sinc"
+@include "MIPS/cop1.sinc"
+@include "vu1.sinc"

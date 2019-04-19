@@ -1,0 +1,12 @@
+<opinions>
+    <constraint loader="Executable and Linking Format (ELF)" compilerSpecID="default">
+
+        <constraint primary="8,10"    processor="MIPS" />
+
+  <!-- MIPSR5900 -->
+        <constraint primary="8,10" processor="MIPS" size="32" variant="R5900"
+                secondary= "0b 0010 0000 1001 0010 0.00 0000 0000 ...."/>
+
+    </constraint>
+
+</opinions>

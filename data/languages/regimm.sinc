@@ -1,0 +1,96 @@
+##***********************REGIMM OPCODES****************************
+# 0000 01ss sss0 0000 iiii iiii iiii iiii 
+:bltz RSsrc, Rel16              is prime=1 & cond=0 & RSsrc & Rel16 { 
+    delayflag:1 = ( RSsrc s< 0 ); 
+    delayslot( 1 ); 
+    if delayflag goto Rel16; 
+}
+# 0000 01ss sss0 0001 iiii iiii iiii iiii 
+:bgez RSsrc, Rel16              is prime=1 & cond=1 & RSsrc & Rel16 {  
+    delayflag:1 = ( RSsrc s>= 0 ); 
+    delayslot( 1 ); 
+    if delayflag goto Rel16; 
+}
+# 0000 01ss sss0 0010 iiii iiii iiii iiii 
+:bltzl RSsrc, Rel16             is prime=1 & cond=2 & RSsrc & Rel16 { 
+    if (!(RSsrc s< 0)) goto inst_next; 
+    delayslot(1);
+    goto Rel16; 
+}
+# 0000 01ss sss0 0011 iiii iiii iiii iiii 
+:bgezl RSsrc, Rel16             is prime=1 & cond=3 & RSsrc & Rel16 { 
+    if (!(RSsrc s>= 0)) goto inst_next; 
+    delayslot(1); 
+    goto Rel16; 
+}
+# 0000 01ss sss0 1000 iiii iiii iiii iiii
+:tgei RSsrc, simmed             is prime=1 & cond=8 & RSsrc & simmed { 
+    if (RSsrc s< simmed) goto <done>; 
+    trap();
+    <done>
+}
+# 0000 01ss sss0 1001 iiii iiii iiii iiii
+:tgeiu RSsrc, simmed            is prime=1 & cond=9 & RSsrc & simmed { 
+    if (RSsrc < simmed) goto <done>; 
+    trap();
+    <done> 
+}
+# 0000 01ss sss0 1010 iiii iiii iiii iiii
+:tlti RSsrc, simmed             is prime=1 & cond=10 & RSsrc & simmed { 
+    if (RSsrc s>= simmed) goto <done>; 
+    trap();
+    <done>
+}
+# 0000 01ss sss0 1011 iiii iiii iiii iiii
+:tltiu RSsrc, simmed            is prime=1 & cond=11 & RSsrc & simmed { 
+    if (RSsrc >= simmed) goto <done>; 
+    trap();
+    <done>
+}
+# 0000 01ss sss0 1100 iiii iiii iiii iiii
+:teqi RSsrc, simmed             is prime=1 & cond=12 & RSsrc & simmed { 
+    if (RSsrc != simmed) goto <done>; 
+    trap();
+    <done>
+}
+# 0000 01ss sss0 1110 iiii iiii iiii iiii
+:tnei RSsrc, simmed             is prime=1 & cond=14 & RSsrc & simmed { 
+    if (RSsrc == simmed) goto <done>; 
+    trap();
+    <done> 
+}
+# 0000 01ss sss1 0000 iiii iiii iiii iiii
+:bltzal RSsrc, Rel16            is prime=1 & cond=16 & RSsrc & Rel16 { 
+    ra = inst_next; 
+    delayflag:1 = ( RSsrc s< 0 ); 
+    delayslot( 1 ); 
+    if (!delayflag) goto inst_next; 
+    call Rel16; 
+}
+:bgezal RSsrc, Rel16            is prime=1 & cond=17 & RSsrc & Rel16 { 
+    ra = inst_next; 
+    delayflag:1 = ( RSsrc s>= 0 ); 
+    delayslot( 1 ); 
+    if (!delayflag) goto inst_next; 
+    call Rel16; 
+}
+# 0000 01ss sss1 0010 iiii iiii iiii iiii
+:bltzall RSsrc, Rel16           is prime=1 & cond=18 & RSsrc & Rel16 { 
+    ra = inst_next; 
+    if (!(RSsrc s< 0)) goto inst_next; 
+    delayslot(1); 
+    call Rel16; 
+}
+# 0000 01ss sss1 0011 iiii iiii iiii iiii
+:bgezall RSsrc, Rel16           is prime=1 & cond=19 & RSsrc & Rel16 { 
+    ra = inst_next; 
+    if (!(RSsrc s>= 0)) goto inst_next; 
+    delayslot( 1 ); 
+    call Rel16; 
+}
+:mtsab RS, immed                is prime=0x01 & rt=0x18 & RS & immed { 
+    sar = zext(RS:1 ^ immed:1);
+}
+:mtsah RS, immed                is prime=0x01 & rt=0x19 & RS & immed { 
+    sar = zext(RS:1 ^ immed:1) & 3;
+}

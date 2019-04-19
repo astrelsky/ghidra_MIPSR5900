@@ -1,0 +1,249 @@
+
+############################
+#
+# MIPSR5900 Instructions
+#
+############################
+
+define register offset=0x3100 size=8 [ hi1 lo1];
+define register offset=0x3110 size=4 [ sar ];
+
+# General purpose registers
+define register offset=0x4100 size=8 [ 
+    zero_upper at_upper v0_upper v1_upper 
+    a0_upper a1_upper a2_upper a3_upper 
+    t0_upper t1_upper t2_upper t3_upper 
+    t4_upper t5_upper t6_upper t7_upper 
+    s0_upper s1_upper s2_upper s3_upper 
+    s4_upper s5_upper s6_upper s7_upper 
+    t8_upper t9_upper k0_upper k1_upper 
+    gp_upper sp_upper fp_upper ra_upper
+];
+
+# 32 Bit Upper Range
+define register offset=0x4100 size=4 [ 
+    zero_upper_hi zero_upper_lo at_upper_hi at_upper_lo
+    v0_upper_hi v0_upper_lo v1_upper_hi v1_upper_lo
+    a0_upper_hi a0_upper_lo a1_upper_hi a1_upper_lo
+    a2_upper_hi a2_upper_lo a3_upper_hi a3_upper_lo
+    t0_upper_hi t0_upper_lo t1_upper_hi t1_upper_lo
+    t2_upper_hi t2_upper_lo t3_upper_hi t3_upper_lo
+    t4_upper_hi t4_upper_lo t5_upper_hi t5_upper_lo
+    t6_upper_hi t6_upper_lo t7_upper_hi t7_upper_lo
+    s0_upper_hi s0_upper_lo s1_upper_hi s1_upper_lo
+    s2_upper_hi s2_upper_lo s3_upper_hi s3_upper_lo
+    s4_upper_hi s4_upper_lo s5_upper_hi s5_upper_lo
+    s6_upper_hi s6_upper_lo s7_upper_hi s7_upper_lo
+    t8_upper_hi t8_upper_lo t9_upper_hi t9_upper_lo
+    k0_upper_hi k0_upper_lo k1_upper_hi k1_upper_lo
+    gp_upper_hi gp_upper_lo sp_upper_hi sp_upper_lo
+    fp_upper_hi fp_upper_lo ra_upper_hi ra_upper_lo
+];
+
+define register offset=0x5000 size=0x10 [
+    vf00 vf01 vf02 vf03 vf04 vf05 vf06 vf07
+    vf08 vf09 vf10 vf11 vf12 vf13 vf14 vf15
+    vf16 vf17 vf18 vf19 vf20 vf21 vf22 vf23
+    vf24 vf25 vf26 vf27 vf28 vf29 vf30 vf31
+];
+
+define register offset=0x5000 size=4 [
+    vf00.w _ _ _
+    vf01.w _ _ _
+    vf02.w _ _ _
+    vf03.w _ _ _
+    vf04.w _ _ _
+    vf05.w _ _ _
+    vf06.w _ _ _
+    vf07.w _ _ _
+    vf08.w _ _ _
+    vf09.w _ _ _
+    vf10.w _ _ _
+    vf11.w _ _ _
+    vf12.w _ _ _
+    vf13.w _ _ _
+    vf14.w _ _ _
+    vf15.w _ _ _
+    vf16.w _ _ _
+    vf17.w _ _ _
+    vf18.w _ _ _
+    vf19.w _ _ _
+    vf20.w _ _ _
+    vf21.w _ _ _
+    vf22.w _ _ _
+    vf23.w _ _ _
+    vf24.w _ _ _
+    vf25.w _ _ _
+    vf26.w _ _ _
+    vf27.w _ _ _
+    vf28.w _ _ _
+    vf29.w _ _ _
+    vf30.w _ _ _
+    vf31.w _ _ _
+    acc
+];
+
+define register offset=0x5000 size=4 [
+    _ vf00.z _ _
+    _ vf01.z _ _
+    _ vf02.z _ _
+    _ vf03.z _ _
+    _ vf04.z _ _
+    _ vf05.z _ _
+    _ vf06.z _ _
+    _ vf07.z _ _
+    _ vf08.z _ _
+    _ vf09.z _ _
+    _ vf10.z _ _
+    _ vf11.z _ _
+    _ vf12.z _ _
+    _ vf13.z _ _
+    _ vf14.z _ _
+    _ vf15.z _ _
+    _ vf16.z _ _
+    _ vf17.z _ _
+    _ vf18.z _ _
+    _ vf19.z _ _
+    _ vf20.z _ _
+    _ vf21.z _ _
+    _ vf22.z _ _
+    _ vf23.z _ _
+    _ vf24.z _ _
+    _ vf25.z _ _
+    _ vf26.z _ _
+    _ vf27.z _ _
+    _ vf28.z _ _
+    _ vf29.z _ _
+    _ vf30.z _ _
+    _ vf31.z _ _
+];
+
+define register offset=0x5000 size=4 [
+    _ _ vf00.y _
+    _ _ vf01.y _
+    _ _ vf02.y _
+    _ _ vf03.y _
+    _ _ vf04.y _
+    _ _ vf05.y _
+    _ _ vf06.y _
+    _ _ vf07.y _
+    _ _ vf08.y _
+    _ _ vf09.y _
+    _ _ vf10.y _
+    _ _ vf11.y _
+    _ _ vf12.y _
+    _ _ vf13.y _
+    _ _ vf14.y _
+    _ _ vf15.y _
+    _ _ vf16.y _
+    _ _ vf17.y _
+    _ _ vf18.y _
+    _ _ vf19.y _
+    _ _ vf20.y _
+    _ _ vf21.y _
+    _ _ vf22.y _
+    _ _ vf23.y _
+    _ _ vf24.y _
+    _ _ vf25.y _
+    _ _ vf26.y _
+    _ _ vf27.y _
+    _ _ vf28.y _
+    _ _ vf29.y _
+    _ _ vf30.y _
+    _ _ vf31.y _
+];
+
+define register offset=0x5000 size=4 [
+     _ _ _ vf00.x
+     _ _ _ vf01.x
+     _ _ _ vf02.x
+     _ _ _ vf03.x
+     _ _ _ vf04.x
+     _ _ _ vf05.x
+     _ _ _ vf06.x
+     _ _ _ vf07.x
+     _ _ _ vf08.x
+     _ _ _ vf09.x
+     _ _ _ vf10.x
+     _ _ _ vf11.x
+     _ _ _ vf12.x
+     _ _ _ vf13.x
+     _ _ _ vf14.x
+     _ _ _ vf15.x
+     _ _ _ vf16.x
+     _ _ _ vf17.x
+     _ _ _ vf18.x
+     _ _ _ vf19.x
+     _ _ _ vf20.x
+     _ _ _ vf21.x
+     _ _ _ vf22.x
+     _ _ _ vf23.x
+     _ _ _ vf24.x
+     _ _ _ vf25.x
+     _ _ _ vf26.x
+     _ _ _ vf27.x
+     _ _ _ vf28.x
+     _ _ _ vf29.x
+     _ _ _ vf30.x
+     _ _ _ vf31.x
+];
+
+attach variables [ rs128 rt128 rd128 ] [ 
+    zero_upper  at_upper  v0_upper  v1_upper  a0_upper  a1_upper  a2_upper  a3_upper
+    t0_upper    t1_upper  t2_upper  t3_upper  t4_upper  t5_upper  t6_upper  t7_upper
+    s0_upper    s1_upper  s2_upper  s3_upper  s4_upper  s5_upper  s6_upper  s7_upper
+    t8_upper    t9_upper  k0_upper  k1_upper  gp_upper  sp_upper  fp_upper  ra_upper 
+];
+
+attach variables [ rs128_lo rt128_lo rd128_lo ] [ 
+    zero_upper_lo  at_upper_lo  v0_upper_lo  v1_upper_lo  a0_upper_lo  a1_upper_lo  a2_upper_lo  a3_upper_lo
+    t0_upper_lo    t1_upper_lo  t2_upper_lo  t3_upper_lo  t4_upper_lo  t5_upper_lo  t6_upper_lo  t7_upper_lo
+    s0_upper_lo    s1_upper_lo  s2_upper_lo  s3_upper_lo  s4_upper_lo  s5_upper_lo  s6_upper_lo  s7_upper_lo
+    t8_upper_lo    t9_upper_lo  k0_upper_lo  k1_upper_lo  gp_upper_lo  sp_upper_lo  fp_upper_lo  ra_upper_lo 
+];
+
+RD128: rd      is rd & rd128        { export rd128; }
+RS128src: rs   is rs & rs128        { export rs128; }
+RS128src: rs   is rs & rs128=0      { export 0:8;   }
+RT128src: rt   is rt & rt128        { export rt128; }
+RT128src: rt   is rt & rt128=0      { export 0:8;   }
+
+RS128src_lo: rs   is rs & rs128_lo        { export rs128_lo; }
+RS128src_lo: rs   is rs & rs128_lo=0      { export 0:4;      }
+RT128src_lo: rt   is rt & rt128_lo        { export rt128_lo; }
+RT128src_lo: rt   is rt & rt128_lo=0      { export 0:4;      }
+
+#:adda.s fs, ft  is fs & ft & prime=0x11 & copop=0x10 & fct=0x18 {
+#    fs_exponent:4 = zext(fs[23,30]);
+#    fs_sign = fs[31,31];
+#    fs_exponent = fs_exponent | (zext(fs_sign) << 31);
+#    ft_exponent:4 = zext(ft[23,30]);
+#    ft_sign = ft[31,31];
+#    ft_exponent = ft_exponent | (zext(ft_sign) << 31);
+#    sum = fs_exponent + ft_exponent;
+#    if (sum s> 0xFF) goto <overflow>;
+#    if (sum s< -0xFF) goto <underflow>;
+#    acc = fs:4 f+ ft:4;
+#    goto <end>;
+#    <overflow>
+#    acc = (zext(fs_sign) << 32) | 0x7F80000000;
+#    fcsr = fcsr | 0x8010;
+#    goto <end>;
+#    <underflow>
+#    acc = (zext(fs_sign) << 32) | 0;
+#    fcsr = fcsr | 0x4008;
+#    <end>
+#}
+
+#TODO lqc2 sqc2 plzcw madd1 maddu1 mfhi1 mflo1 mthi1 mtlo1 mult1 multu1
+# div1 divu1 pmfhl pmthl psllh psrlh psrah psllw psrlw psraw paddw PSUBW
+# PCGTW PMAXW PADDH PSUBH PCGTH PMAXH PADDB PSUBB PCGTB PADDSW PSUBSW
+# PEXTLW PPACW PADDSH PSUBSH PEXTLH PPACH PADDSB PSUBSB PEXTLB PPACB PEXT5 PPAC5
+
+# 0010 10ss ssst tttt iiii iiii i111 iiii
+#:padduw RD, RSsrc, RTsrc       is prime=0x1C & fct=0x28 & RSsrc & RTsrc & RD {
+#    RD = UnsignedSaturate(RSsrc + RTsrc);
+#}
+#:padduw RD, RSsrc, RTsrc       is prime=0x1C & fct=0x28 & RSsrc & RTsrc & RD & rs32=0 {
+#    RD = 0;
+#}

@@ -1,0 +1,243 @@
+
+# 0100 01ff fff0 0000 ssss sddd dd00 0101
+:abs.s fd, fs               is prime=0x11 & fct=5 & format=0x10 & fs & fd {
+	fd[0,32] = abs( fs:4 );
+}
+
+# 0100 01ff ffft tttt ssss sddd dd00 0000
+:add.s fd, fs, ft           is prime=0x11 & fct=0 & format=0x10 & ft & fs & fd {
+    fd_tmp:4 = fs:4 f+ ft:4;
+    fd[0,32] = fs:4 f+ ft:4;
+}
+
+:adda.s fs, ft              is prime=0x11 & fs & ft & fd=0 & format=0x10 & fct=0x18 {
+    acc = fs:4 f+ ft:4;
+}
+
+# 0100 0100 010t tttt ssss s000 0000 0000
+:cfc1 RT, fs_unk                    is prime=0x11 & copop=2 & RT & fs_unk & bigfunct=0 {    
+    tmp:4 = getCopControlWord( 1:1, fs_unk:4 );
+    RT = sext(tmp);
+}
+:cfc1 RT, fs_fcr                is prime=0x11 & copop=2 & RT & fs_fcr & (fs=0 | fs=25 | fs=26 | fs=28 | fs=31) & bigfunct=0 { 
+    RT = sext(fs_fcr);
+}
+# Since we don't track the state of the FCSR bits, no sense in introducing complex code
+#:cfc1 RT, fs_fcr               is prime=0x11 & copop=2 & RT & fs_fcr & fs=25 & bigfunct=0 {  
+#    tmp1:4 = (fcsr & 0x00800000) >> 23;  
+#    tmp2:4 = (fcsr & 0xfe000000) >> 24;
+#    RT = sext(tmp2 + tmp1);
+#}
+#:cfc1 RT, fs_fcr                    is prime=0x11 & copop=2 & RT & fs_fcr & fs=26 & bigfunct=0 {
+#    tmp1:4 = fcsr & 0x0003f07c;   
+#    RT = sext(tmp1);
+#}
+#:cfc1 RT, fs_fcr                    is prime=0x11 & copop=2 & RT & fs_fcr & fs=28 & bigfunct=0 {
+#    tmp1:4 = fcsr & 0x00000f83;
+#    tmp2:4 = (fcsr & 0x01000000) >> 24;  
+#    RT = sext(tmp1 + tmp2);
+#}
+#:cfc1 RT, fs_fcr                    is prime=0x11 & copop=2 & RT & fs_fcr & fs=31 & bigfunct=0 {
+#    RT = sext(fcsr);
+#}
+
+# 0100 0100 110t tttt ssss s000 0000 0000
+:ctc1 RTsrc, fs_unk             is prime=0x11 & copop=6 & RTsrc & fs_unk & bigfunct=0 {    
+    setCopControlWord( 1:1, fs_unk:4, RTsrc );
+}
+:ctc1 RTsrc, fs_fcr             is prime=0x11 & copop=6 & RTsrc & fs_fcr & (fs=0 | fs=25 | fs=26 | fs=28 | fs=31) & bigfunct=0 {    
+    fs_fcr = RTsrc:$(SIZETO4);
+}
+
+:cvt.s.w fd, fs             is prime=0x11 & ft=0x0 & fct=0x20 & fd & fs & format=0x14 {
+    fd[0,32] = int2float(fs:4);
+}
+
+# 0100 01ff fff0 0000 ssss sddd dd10 0100
+:cvt.w.s fd, fs             is prime=0x11 & ft=0x0 & fct=0x24 & fd & fs & format=0x10 {
+    # Convert from single float source to 32-bit integer word, using the fcsr RM rounding mode bits
+    rm_tmp:1 = fcsr[0,2]; # Get RM rounding mode bits
+    fs_tmp:4 = fs:4;
+    fs_cvt_tmp:4 = 0;
+    if (rm_tmp == 0) goto <do_round>;
+      fs_cvt_tmp = floor(fs_tmp); # RM is 1, no rounding, and floor returns a float
+      goto <done>;
+    <do_round>
+      fs_cvt_tmp = round(fs_tmp); # round returns a float
+    <done>
+    fd[0,32] = trunc(fs_cvt_tmp);	# trunc returns an integer
+}
+
+# 0100 01ff ffft tttt ssss sddd dd00 0011
+:div.s fd, fs, ft           is prime=0x11 & fct=3 & ft & fs & fd & format=0x10 {
+    fd[0,32] = fs:4 f/ ft:4;
+}
+
+# 1100 01bb bbbt tttt iiii iiii iiii iiii
+:lwc1 ft, OFF_BASE              is prime=49 & OFF_BASE & ft {        
+    ft[0,32] = *[ram]:4 OFF_BASE;
+}
+
+# 0100 0100 000t tttt ssss s000 0000 0000
+:mfc1 RT, fs                    is prime=0x11 & copop=0 & RT & fs & bigfunct=0 {
+    # Move just a word, 32-bits
+    RT = sext( fs:$(SIZETO4) );
+}
+
+# 0100 01ff fff0 0000 ssss sddd dd00 0110
+:mov.s fd, fs               is prime=0x11 & fct=6 & fs & fd & format=0x10 {
+    fd[0,32] = fs:4;
+}
+
+# 0100 0100 100t tttt dddd d000 0000 0000
+:mtc1 RTsrc, fs                 is prime=0x11 & copop=4 & RTsrc & fs & bigfunct=0 {
+    # Move 32-bits of RTsrc to Low Half of FPR fs
+	fs[0,32] = RTsrc:$(SIZETO4);
+}
+
+# 0100 01ff ffft tttt ssss sddd dd00 0010
+:mul.s fd, fs, ft           is prime=0x11 & fct=2 & ft & fs & fd & format=0x10 {
+    fd[0,32] = fs:4 f* ft:4; # need to only get the single float 32-bit (fs might be 64-bits)
+}
+
+:mula.s fs, ft              is prime=0x11 & fs & ft & fd=0 & format=0x10 & fct=0x1A {
+    acc = fs:4 f* ft:4;
+}
+
+# 0100 01ff fff0 0000 ssss sddd dd00 0111
+:neg.s fd, fs               is prime=0x11 & fct=7 & fs & fd & format=0x10 {
+    fd[0,32] = f- fs:4;
+}
+
+# 0100 01ff fff0 0000 ssss sddd dd01 0110
+:rsqrt.s fd, fs, ft             is prime=0x11 & ft & fct=22 & fd & fs & format=0x10 {
+    fd[0,32] = fs:4 f/ sqrt(fs:4);
+}
+
+# 0100 01ff fff0 0000 ssss sddd dd00 0100
+:sqrt.s fd, ft              is prime=0x11 & ft & fct=4 & fd & fs=0 & format=0x10 {
+    fd[0,32] = sqrt(ft:4);
+}
+
+# 0100 01ff ffft tttt ssss sddd dd00 0001
+:sub.s fd, fs, ft           is prime=0x11 & fct=1 & ft & fs & fd & format=0x10 {
+    fd[0,32] = fs:4 f- ft:4;
+}
+
+:suba.s fs, ft              is prime=0x11 & fs & ft & fd=0 & format=0x10 & fct=0x19 {
+    acc = fs:4 f- ft:4;
+}
+
+# 1110 01bb bbbt tttt iiii iiii iiii iiii
+:swc1 ft, OFF_BASE              is prime=57 & OFF_BASE & ft { 
+    *[ram]:4 OFF_BASE = ft:$(SIZETO4); 
+}
+
+# 0100 11rr rrrt tttt ssss sddd dd10 0fff
+:madd.s fd, fs, ft      is prime=0x11 & fd & fs & ft & fct=0x1c & format=0x10 {
+    fd[0,32] = (fs:4 f* ft:4) f+ acc; # must do floating arithmetic in 32 bit
+}
+
+:madda.s fs, ft             is prime=0x11 & format=0x10 & fs & ft & fd=0 & fct=0x1E {
+    acc = acc f+ (fs:4 f* ft:4);
+}
+
+# 0100 11rr rrrt tttt ssss sddd dd10 1fff
+:msub.s fd, fs, ft      is prime=0x11 & fd & fs & ft & format=0x10 & fct=0x1D {
+    fd[0,32] = acc f- (fs:4 f* ft:4); # must do floating arithmetic in 32 bit
+}
+
+:msuba.s fs, ft             is prime=0x11 & format=0x10 & fs & ft & fd=0 & fct=0x1F {
+    acc = acc f- (fs:4 f* ft:4);
+}
+
+# 0100 0101 000c cc00 iiii iiii iiii iiii
+:bc1f Rel16                     is prime=0x11 & copop=8 & cc=0 & nd=0 & tf=0 & Rel16 {
+    tmp:1 = fcsr[23,1]; # The floating point condition bit
+    delayslot(1);
+    if (tmp != 0) goto inst_next;
+    goto Rel16;
+}
+:bc1f cc,Rel16                  is prime=0x11 & copop=8 & cc & nd=0 & tf=0 & Rel16 {
+    # tmp:1 = getFpCondition(cc:1);  # Note that other cc conditions are not implemented
+    tmp:1 = fcsr[23,1]; # The floating point condition bit
+    delayslot(1);
+    if (tmp != 0) goto inst_next;
+    goto Rel16;
+}
+# 0100 0101 000c cc10 iiii iiii iiii iiii
+:bc1fl Rel16                    is prime=0x11 & copop=8 & cc=0 & nd=1 & tf=0 & Rel16 {
+    tmp:1 = fcsr[23,1];
+    if (tmp != 0) goto inst_next;
+    delayslot(1);
+    goto Rel16;
+}
+:bc1fl cc,Rel16                 is prime=0x11 & copop=8 & cc & nd=1 & tf=0 & Rel16 {
+    # tmp:1 = getFpCondition(cc:1);
+    tmp:1 = fcsr[23,1]; # The floating point condition bit
+    if (tmp != 0) goto inst_next;
+    delayslot(1);
+    goto Rel16;
+}
+
+# 0100 0101 000c cc01 iiii iiii iiii iiii
+:bc1t Rel16                     is prime=0x11 & copop=8 & cc=0 & nd=0 & tf=1 & Rel16 {
+    tmp:1 = fcsr[23,1];
+    delayslot(1);
+    if (tmp == 0) goto inst_next;
+    goto Rel16;
+}
+:bc1t cc,Rel16                  is prime=0x11 & copop=8 & cc & nd=0 & tf=1 & Rel16 {
+    # tmp:1 = getFpCondition(cc:1);
+    tmp:1 = fcsr[23,1]; # The floating point condition bit
+    delayslot(1);
+    if (tmp == 0) goto inst_next;
+    goto Rel16;
+}
+# 0100 0101 000c cc11 iiii iiii iiii iiii
+:bc1tl Rel16                    is prime=0x11 & copop=8 & cc=0 & nd=1 & tf=1 & Rel16 {
+    tmp:1 = fcsr[23,1];
+    if (tmp == 0) goto inst_next;
+    delayslot(1);
+    goto Rel16;
+}
+:bc1tl cc,Rel16                 is prime=0x11 & copop=8 & cc & nd=1 & tf=1 & Rel16 {
+    # tmp:1 = getFpCondition(cc:1);
+    tmp:1 = fcsr[23,1]; # The floating point condition bit
+    if (tmp == 0) goto inst_next;
+    delayslot(1);
+    goto Rel16;
+}
+
+# The pre-release 6 floating point compare instructions, c.condn.s or .D, set the fcsr bit 23
+
+macro trapIfNaN(x1, x2) { }
+macro trapIfSNaN(x1, x2) { }
+
+:c.f.s fs, ft               is prime=0x11 & fct=0x30 & format=0x10 & fs & ft {
+    trapIfSNaN(fs:4, ft:4); # Trap if either operand is a Signaling NaN
+    fcsr[23,1] = 0; # Always false
+}
+
+:c.eq.s fs, ft              is prime=0x11 & fct=0x32 & format=0x10 & fs & ft {
+    trapIfSNaN(fs:4, ft:4);
+    fcsr[23,1] = (fs:4 f== ft:4);
+}
+:c.lt.s fs, ft              is prime=0x11 & fct=0x34 & format=0x10 & fs & ft {
+    trapIfNaN(fs:4, ft:4);
+    fcsr[23,1] = (fs:4 f< ft:4);
+}
+:c.le.s fs, ft              is prime=0x11 & fct=0x36 & format=0x10 & fs & ft {
+    trapIfNaN(fs:4, ft:4);
+    fcsr[23,1] = (fs:4 f<= ft:4);
+}
+:min.s fd, fs, ft	is prime=0x11 & format=0x10 & cop1code=0x0 & fs & fd & ft & fct=0x1c {
+    # set floating point fd to the min of fs and ft, TBD special case for NaN
+    tmp_cond:1 = fs:4 f< ft:4;
+    fd[0,32] = (fs:4 * zext(tmp_cond == 1)) | (ft:4 * zext(tmp_cond == 0) );
+}
+:max.s fd, fs, ft       is prime=0x11 & format=0x10 & cop1code=0x0 & fs & fd & ft & fct=0x1d {
+    # set floating point fd to the max of fs and ft, TBD special case for NaN
+    tmp_cond:1 = fs:4 f> ft:4;
+    fd[0,32] = (fs:4 * zext(tmp_cond == 1)) | (ft:4 * zext(tmp_cond == 0) );
+}

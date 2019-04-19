@@ -1,0 +1,99 @@
+
+define token vuinstr(32)
+    vuflags       = (27,31)
+    vubit26       = (26,26)
+    vubit25       = (25,25)
+    dest          = (21,24)
+    w             = (21,21)
+    x             = (24,24)
+    y             = (23,23)
+    z             = (22,22)
+    vuft          = (16,20)
+    ft.w          = (16,20)
+    ft.x          = (16,20)
+    ft.y          = (16,20)
+    ft.z          = (16,20)
+    vufs          = (11,15)
+    fs.w          = (11,15)
+    fs.x          = (11,15)
+    fs.y          = (11,15)
+    fs.z          = (11,15)
+    vufd          = (6,10)
+    fd.w          = (6,10)
+    fd.x          = (6,10)
+    fd.y          = (6,10)
+    fd.z          = (6,10)
+    vuinst        = (0,5)
+    opcode        = (2,5)
+    bc            = (0,1)
+;
+
+attach variables [ vufd vufs vuft ] [
+    vf00 vf01 vf02 vf03 vf04 vf05 vf06 vf07
+    vf08 vf09 vf10 vf11 vf12 vf13 vf14 vf15
+    vf16 vf17 vf18 vf19 vf20 vf21 vf22 vf23
+    vf24 vf25 vf26 vf27 vf28 vf29 vf30 vf31
+];
+
+attach variables [ fd.w fs.w ft.w ] [ 
+    vf00.w vf01.w vf02.w vf03.w vf04.w vf05.w vf06.w vf07.w
+    vf08.w vf09.w vf10.w vf11.w vf12.w vf13.w vf14.w vf15.w
+    vf16.w vf17.w vf18.w vf19.w vf20.w vf21.w vf22.w vf23.w
+    vf24.w vf25.w vf26.w vf27.w vf28.w vf29.w vf30.w vf31.w
+];
+
+attach variables [ fd.x fs.x ft.x ] [ 
+    vf00.x vf01.x vf02.x vf03.x vf04.x vf05.x vf06.x vf07.x
+    vf08.x vf09.x vf10.x vf11.x vf12.x vf13.x vf14.x vf15.x
+    vf16.x vf17.x vf18.x vf19.x vf20.x vf21.x vf22.x vf23.x
+    vf24.x vf25.x vf26.x vf27.x vf28.x vf29.x vf30.x vf31.x
+];
+
+attach variables [ fd.y fs.y ft.y ] [ 
+    vf00.y vf01.y vf02.y vf03.y vf04.y vf05.y vf06.y vf07.y
+    vf08.y vf09.y vf10.y vf11.y vf12.y vf13.y vf14.y vf15.y
+    vf16.y vf17.y vf18.y vf19.y vf20.y vf21.y vf22.y vf23.y
+    vf24.y vf25.y vf26.y vf27.y vf28.y vf29.y vf30.y vf31.y
+];
+
+attach variables [ fd.z fs.z ft.z ] [ 
+    vf00.z vf01.z vf02.z vf03.z vf04.z vf05.z vf06.z vf07.z
+    vf08.z vf09.z vf10.z vf11.z vf12.z vf13.z vf14.z vf15.z
+    vf16.z vf17.z vf18.z vf19.z vf20.z vf21.z vf22.z vf23.z
+    vf24.z vf25.z vf26.z vf27.z vf28.z vf29.z vf30.z vf31.z
+];
+
+SPECIAL:   is opcode=0xF {}
+
+attach names dest [
+    _ "w" "z" "zw" "y" "yw" "yz" "yzw"
+    "x" "xw" "xz" "xzw" "xy" "xyw" "xyz" "xyzw" ];
+
+fssrc: vufs       is vufs & fs.w & w & x=0 & y=0 & z=0         { export fs.w; }
+fssrc: vufs       is vufs & fs.x & w=0 & x & y=0 & z=0         { export fs.x; }
+fssrc: vufs       is vufs & fs.y & w=0 & x=0 & y & z=0         { export fs.y; }
+fssrc: vufs       is vufs & fs.z & w=0 & x=0 & y=0 & z         { export fs.z; }
+
+fsvu: vufs       is vufs & fs.w & w & x=0 & y=0 & z=0         { export fs.w; }
+fsvu: vufs       is vufs & fs.x & w=0 & x & y=0 & z=0         { export fs.x; }
+fsvu: vufs       is vufs & fs.y & w=0 & x=0 & y & z=0         { export fs.y; }
+fsvu: vufs       is vufs & fs.z & w=0 & x=0 & y=0 & z         { export fs.z; }
+
+ftsrc: vuft       is vuft & ft.w & w & x=0 & y=0 & z=0         { export ft.w; }
+ftsrc: vuft       is vuft & ft.x & w=0 & x & y=0 & z=0         { export ft.x; }
+ftsrc: vuft       is vuft & ft.y & w=0 & x=0 & y & z=0         { export ft.y; }
+ftsrc: vuft       is vuft & ft.z & w=0 & x=0 & y=0 & z         { export ft.z; }
+
+fdvu: vufd       is vufd & fd.w & w & x=0 & y=0 & z=0         { export fd.w; }
+fdvu: vufd       is vufd & fd.x & w=0 & x & y=0 & z=0         { export fd.x; }
+fdvu: vufd       is vufd & fd.y & w=0 & x=0 & y & z=0         { export fd.y; }
+fdvu: vufd       is vufd & fd.z & w=0 & x=0 & y=0 & z         { export fd.z; }
+
+
+:abs."dest" fsvu, ftsrc         is SPECIAL & bc=1 & vufd=7 & dest & fsvu & ftsrc {
+    fsvu = abs(ftsrc);
+}
+
+:add."dest" fdvu, fssrc, ftsrc  is vuinst=0x28 & fdvu & fssrc & ftsrc {
+    fdvu = fssrc f+ ftsrc;
+}

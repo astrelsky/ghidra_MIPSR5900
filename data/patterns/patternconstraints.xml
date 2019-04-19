@@ -1,0 +1,5 @@
+<patternconstraints>
+  <language id="MIPS:LE:32:R5900">
+    <patternfile>MIPS_R5900_patterns.xml</patternfile>
+  </language>
+</patternconstraints>
