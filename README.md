@@ -41,3 +41,4 @@ TODO
 * VU Support
 * DWARF information for new/special registers
 * Memory Map
+* Fix DWARF File Reading
