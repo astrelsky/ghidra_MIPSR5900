@@ -1,6 +1,8 @@
 MIPSR5900le Ghidra Processor Specifications
 =======================
 
+Depreciated. Please use (https://github.com/beardypig/ghidra-emotionengine) or (https://github.com/astrelsky/ghidra-emotionengine)
+
 The following has been created using publicly available information.
 As such it may contain errors.
 
